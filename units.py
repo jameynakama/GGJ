@@ -126,10 +126,14 @@ class Clod(Unit):
 
 
 class Dragon(Unit):
-  def __init__(self):
+  def __init__(self, r, t):
     super(Dragon, self).__init__()
-    self.position = [0, 0]
+    
+    @property
+    def pos(self):
+      return self.body.GetPosition()
     self.action = 'seeking'
+    self.body = physics.dragon_body(r, t)
     # seeking or linked
   
   def update(self):

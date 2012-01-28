@@ -110,7 +110,7 @@ class DebugDraw(box2d.b2DebugDraw):
         Draw a filled polygon given the world vertices in_vertices (tuples) with the specified color.
         """
         color = self.convertColor(color)
-        vertices = [self.toScreen(v) for v in in_vertices]
+        vertices = [self.toScreen(b2Vec2(v)) for v in in_vertices]
         # print vertices
         pygame.draw.polygon(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), vertices, 0)
         pygame.draw.polygon(self.surface, color, vertices, 1)

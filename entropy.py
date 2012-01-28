@@ -27,6 +27,9 @@ class Game:
 
     GameState.current = PlayState()
 
+    units.Dragon(15, math.pi/2)
+    units.Dragon(15, -math.pi/2)
+
   def run_loop(self):
 
     home = units.Home()
