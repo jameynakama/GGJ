@@ -1,19 +1,23 @@
 import pygame, Box2D
 import math
 from common import *
-from game_state import GameState
+from game_state import GameState, state
 
-class Unit(object):
+class Unit(pygame.sprite.Sprite, object):
+
+  def __init__(self):
+    super(Unit, self).__init__()
 
   @property
   def screenCoords(self):
     return GameState.current.toScreen(self.pos)
 
-class Home(pygame.sprite.Sprite, Unit):
+class Home(Unit):
 
-  class Ent(pygame.sprite.Sprite, Unit):
+  class Ent(Unit):
     def __init__(self, home):
       super(Home.Ent, self).__init__()
+
       self.home = home
       #Cooldown for allowing the player to fire SOILORBS
       self.shot_cool = 20
@@ -29,8 +33,12 @@ class Home(pygame.sprite.Sprite, Unit):
     def update(self):
       self.shot_cool -= 1
       pass
+
     def draw(self):
       pass
+
+    def shoot(self, vel):
+      Clod(self.pos, vel, 0.5)
 
   def __init__(self):
     super(Home, self).__init__()
@@ -38,16 +46,23 @@ class Home(pygame.sprite.Sprite, Unit):
     self.ent = Home.Ent(self)
     self.angle = 0.0
     self.angle_delta = 0.05
-    self.mass = 10000
+    self.mass = 100
+
     screen = pygame.display.get_surface()
     self.rect = None
     self.pos = vec(0,0)
     self.body = physics.home_body(self.radius)
   
 
+  instance = None
+
   @property
   def radius(self):
-    return math.sqrt(float(self.mass)/math.pi)
+    return Home.mass_to_radius(self.mass)
+
+  @staticmethod
+  def mass_to_radius(mass):
+    return math.sqrt(float(mass)/math.pi)
 
   def update(self):
     ent.update()
@@ -76,25 +91,28 @@ class Home(pygame.sprite.Sprite, Unit):
       self.pos = self.pos + vec(1,0)
     
 
-class Clod(pygame.sprite.Sprite, Unit):
+class Clod(Unit):
+
   def __init__(self, pos, vel, mass):
     super(Clod, self).__init__()
     self.mass = mass
-    self.radius = 1
-    self.body = Game.world.CreateDynamicBody(
-        position=pos,
-        fixtures=b2FixtureDef(
-           shape=b2CircleShape(radius=self.radius),
-           density=0.5,
-           restitution=0,
-           friction=0.5
-           ),
-        damping=0
-        )
-    print dir(self.body)
+    self.radius = Home.mass_to_radius(mass)
+    self.body = physics.clod_body(self.radius, pos, vel, mass)
+    state().clods.add(self)
+    Home.instance.mass -= mass
+
+  @property
+  def pos(self):
+    return self.body.GetPosition()
+
+  def update(self):
+    grav = -self.pos
+    len = grav.Normalize()
+    grav *= 0.5 * Home.instance.mass / (len*len)
+    self.body.ApplyForce(grav, self.pos)
 
 
-class Dragon(pygame.sprite.Sprite, Unit):
+class Dragon(Unit):
   def __init__(self):
     super(Dragon, self).__init__()
     self.position = [0, 0]

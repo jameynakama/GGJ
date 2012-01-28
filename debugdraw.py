@@ -13,23 +13,10 @@ class DebugDraw(box2d.b2DebugDraw):
     """
     circle_segments = 16
     surface = None
-    viewZoom = 1.0
-    viewCenter = None
-    viewOffset = None
     width, height = 0, 0
     def __init__(self): 
         super(DebugDraw, self).__init__()
         
-    def _setValues(self, viewZoom, viewCenter, viewOffset, width, height):
-        """
-        Sets the view zoom, center, offset, and width and height of the screen such that access 
-        to the main window is unnecessary.
-        """
-        self.viewZoom=viewZoom
-        self.viewCenter=viewCenter
-        self.viewOffset=viewOffset
-        self.width = width 
-        self.height = height
 
     def convertColor(self, color):
         """
@@ -127,6 +114,10 @@ class DebugDraw(box2d.b2DebugDraw):
         # print vertices
         pygame.draw.polygon(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), vertices, 0)
         pygame.draw.polygon(self.surface, color, vertices, 1)
+    
+    @property
+    def viewZoom(self):
+        return GameState.current.zoom
 
     def toScreen(self, pt):
         """

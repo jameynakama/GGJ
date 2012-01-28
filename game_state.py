@@ -8,7 +8,7 @@ class GameState(object):
 
   def __init__(self):
     self.scroll = vec(0,0)
-    # self.zoom = 1.0
+    self.zoom = 20
 
   def update(self):
     pass
@@ -17,19 +17,25 @@ class GameState(object):
     pass
 
   def toScreen(self, v):
-    p = v - self.scroll
+    p = v*self.zoom - self.scroll
     return (int(p.x), int(p.y))
 
+# just a shortcut to get the current state (in our case it's always PlayState, until we make a MenuState or something)
+def state():
+  return GameState.current
 
 class PlayState(GameState):
 
   def __init__(self):
     super(PlayState, self).__init__()
     self.scroll = vec(-400,-400)
-    # self.zoom = 1.0
+
+    self.clods = pygame.sprite.RenderClear()
+    self.dragons = pygame.sprite.RenderClear()
 
   def update(self):
-    pass
+    self.clods.update()
+    self.dragons.update()
 
   def draw(self):
     pass
