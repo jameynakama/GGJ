@@ -8,6 +8,12 @@ class Unit(pygame.sprite.Sprite, object):
   def __init__(self):
     super(Unit, self).__init__()
 
+  def doGravity(self):
+    grav = -self.pos
+    len = grav.Normalize()
+    grav *= params.home.gravitational_constant * Home.instance.mass / (len*len)
+    self.body.ApplyForce(grav, self.pos)
+
   @property
   def screenCoords(self):
     return GameState.current.toScreen(self.pos)
@@ -41,7 +47,10 @@ class Home(Unit):
       pygame.draw.circle(screen, [255, 0, 255], self.screenCoords, 20, 0)
 
     def shoot(self, vel):
-      Clod(self.pos, vel, 0.5)
+      if(Home.instance.mass > params.home.min_mass):
+        Clod(self.pos, vel, 2.5)
+      else:
+        print "Home mass too small to shoot!  hah!"
 
     def fire(self, angle):
       speed = 10.0
@@ -56,14 +65,14 @@ class Home(Unit):
     self.angle = 0.0
     self.angle_mult = 1.0
     self.angle_delta = 5.0 
-    self.mass = 100
+    self.mass = params.home.initial_mass
 
 
     screen = pygame.display.get_surface()
     self.rect = None
     self.pos = vec(0,0)
     self.body = physics.home_body(self.radius)
-  
+    # shape.SetUserData(self)
 
   instance = None
 
@@ -76,18 +85,18 @@ class Home(Unit):
     return math.sqrt(float(mass)/math.pi)
 
   def update(self):
-    ent.update()
-    pass
+    self.ent.update()
+    world.DestroyBody(self.body)
+    self.body = physics.home_body(self.radius)
 
   def draw(self, screen):
-    self.ent.draw(screen)
-    #pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
+    self.ent.draw()
+    pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
 
   def event(self, key):
     if key[pygame.K_SPACE]:
       self.ent.shot_cool -= 1
       if self.ent.shot_cool < 0:
-        #fireang = self.ent.shot_angle + (self.angle * self.angle_mult)
         fireang = (self.ent.shot_angle *self.angle_mult) + self.angle
         print fireang
         self.ent.fire(fireang)
@@ -104,22 +113,24 @@ class Home(Unit):
     if key[ord('a')]:
       print 'a event called', self.angle
       self.angle_mult = -1.0
-      self.angle = self.angle%360.0 - self.angle_delta 
+      self.angle = self.angle - self.angle_delta 
 
     elif key[ord('d')]:
       print 'd event called', self.angle
       self.angle_mult = 1.0
-      self.angle = self.angle%360.0 + self.angle_delta
-
-class Clod(Unit):
+      self.angle = self.angle + self.angle_delta
 
   def __init__(self, pos, vel, mass):
     super(Clod, self).__init__()
     self.mass = mass
     self.radius = Home.mass_to_radius(mass)
-    self.body = physics.clod_body(self.radius, pos, vel, mass)
+    self.body, shape = physics.clod_body(self.radius, pos, vel, mass)
+    shape.SetUserData(self)
     state().clods.add(self)
     Home.instance.mass -= mass
+
+  def __del__(self):
+    Home.instance.mass += self.mass
 
   @property
   def pos(self):
@@ -130,22 +141,31 @@ class Clod(Unit):
 
 
   def update(self):
-    grav = -self.pos
-    len = grav.Normalize()
-    grav *= 0.5 * Home.instance.mass / (len*len)
-    self.body.ApplyForce(grav, self.pos)
+    self.doGravity()
+    if(self.pos.Length() + self.radius < Home.instance.radius):
+      world.DestroyBody(self.body)
+      state().clods.remove(self)
+      del self
 
 
 class Dragon(Unit):
-  def __init__(self):
+  def __init__(self, r, t):
     super(Dragon, self).__init__()
-    self.position = [0, 0]
-    self.action = 'seeking'
-    # seeking or linked
+    self.is_hit = False
+    state().dragons.add(self)
+    self.body, shape = physics.dragon_body(r, t)
+    shape.SetUserData(self)
   
+  @property
+  def pos(self):
+    return self.body.GetPosition()
+
   def update(self):
-    pass
+    if self.is_hit:
+      self.doGravity()
+  
+  def draw(self, screen):
+    pygame.draw.rect(screen, [255, 127, 80], [self.screenCoords, (20, 20)])
   
   def seek_partner(self):
     pass
-

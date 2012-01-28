@@ -37,7 +37,7 @@ class PlayState(GameState):
     self.clods.update()
     self.dragons.update()
 
-  def draw(self):
-    pass
-
+  def draw(self, screen):
+    self.clods.draw(screen)
+    self.dragons.draw(screen)
 

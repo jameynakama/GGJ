@@ -18,7 +18,7 @@ class Game:
     pygame.display.set_caption('Entropy')
 
     self.backgd = pygame.Surface(self.screen.get_size())
-    back_color = [128,128,128]
+    self.back_color = [128,128,128]
 
     physics.b2draw.surface = self.screen
 
@@ -27,25 +27,29 @@ class Game:
 
     GameState.current = PlayState()
 
+    units.Dragon(15, math.pi/2)
+    units.Dragon(15, -math.pi/2)
+
   def run_loop(self):
-    
-    black = [0,0,0]
 
     home = units.Home()
     units.Home.instance = home
     # home_sprites = pygame.sprite.RenderPlain(home)
 
     def update():
+      home.update()
       GameState.current.update()
       physics.worldStep()
 
     def draw():
-      GameState.current.draw()
+      # GameState.current.draw(self.screen)
       home.draw(self.screen)
+      
+
 
     while 1:
       self.clock.tick(60)
-      self.screen.fill(black)
+      self.screen.fill(self.back_color)
 
       pygame.event.pump()
       key = pygame.key.get_pressed()
@@ -57,7 +61,7 @@ class Game:
           if event.key == K_ESCAPE:
             return
           if event.key == K_SPACE:
-            home.ent.shoot(vec(0,5))
+            home.ent.shoot(vec(1,1))
     
       update()
       draw()
