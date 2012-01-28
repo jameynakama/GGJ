@@ -110,12 +110,10 @@ class Home(Unit):
       print self.ent.shot_angle
 
     if key[ord('a')]:
-      print 'a event called', self.angle
       self.angle_mult = -1.0
       self.angle = self.angle - self.angle_delta 
 
     elif key[ord('d')]:
-      print 'd event called', self.angle
       self.angle_mult = 1.0
       self.angle = self.angle + self.angle_delta
 
@@ -131,6 +129,10 @@ class Clod(Unit):
 
   def __del__(self):
     Home.instance.mass += self.mass
+
+  @property
+  def category(self):
+    return "clod"
 
   @property
   def pos(self):
@@ -166,7 +168,12 @@ class Dragon(Unit):
           init_angle = spawn_angle,
           init_velocity = vel,
           )
-  
+
+
+  @property
+  def category(self):
+    return "dragon"
+    
   @property
   def pos(self):
     return self.body.GetPosition()

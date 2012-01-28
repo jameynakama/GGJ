@@ -8,4 +8,5 @@ class CL(Box2D.b2ContactListener):
   def Add(self, contact):
     a = contact.shape1
     b = contact.shape2
-    # print type(a.GetUserData), type(b.GetUserData)
+    print type(a.userData), (b.userData)
+    # print (a.GetUserData), (b.GetUserData)
