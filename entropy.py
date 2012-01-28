@@ -3,6 +3,7 @@ from Box2D import *
 from pygame.locals import *
 from debugdraw import DebugDraw
 import units
+from game_state import *
 
 class Game:
   def __init__(self):
@@ -19,6 +20,8 @@ class Game:
 
     self.frames = 0
     self.show = pygame.sprite.RenderClear()
+
+    GameState.current = PlayState()
 
     ### BOX2D STUFF ###
     worldAABB=b2AABB()

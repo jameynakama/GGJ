@@ -1,9 +1,17 @@
 import pygame, Box2D
 import math
 import entropy
+from game_state import GameState
+from common import *
 
+class Unit(object):
 
-class Home(pygame.sprite.Sprite):
+  @property
+  def screenCoords(self):
+    p = self.pos - GameState.current.scroll
+    return (int(p.x), int(p.y))
+
+class Home(pygame.sprite.Sprite, Unit):
 
   class Ent(pygame.sprite.Sprite):
     def __init__(self):
@@ -23,7 +31,7 @@ class Home(pygame.sprite.Sprite):
     self.mass = 10000
     screen = pygame.display.get_surface()
     self.rect = None
-    self.pos = [400,400]
+    self.pos = vec(0,0)
 
   @property
   def radius(self):
@@ -33,4 +41,4 @@ class Home(pygame.sprite.Sprite):
     pass
 
   def draw(self, screen):
-    pygame.draw.circle(screen, [255,255,0], self.pos, int(self.radius), 0)
+    pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
