@@ -45,6 +45,7 @@ class Home(Unit):
 
   def __init__(self):
     super(Home, self).__init__()
+
     self.ent = Home.Ent(self)
     self.angle = 0.0
     self.mass = 100
