@@ -42,7 +42,7 @@ class Game:
       physics.worldStep()
 
     def draw():
-      # GameState.current.draw(self.screen)
+      GameState.current.draw(self.screen)
       home.draw(self.screen)
 
 

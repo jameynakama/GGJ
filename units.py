@@ -15,7 +15,7 @@ class Unit(pygame.sprite.Sprite, object):
     self.body.ApplyForce(grav, self.pos)
 
   @property
-  def screenCoords(self):
+  def screen_coords(self):
     return GameState.current.toScreen(self.pos)
 
 class Home(Unit):
@@ -43,7 +43,7 @@ class Home(Unit):
       self.shot_cool -= 1
 
     def draw(self, screen):
-      pygame.draw.circle(screen, [255, 0, 255], self.screenCoords, 20, 0)
+      pygame.draw.circle(screen, [255, 0, 255], self.screen_coords, 20, 0)
 
     def shoot(self, vel):
       if(Home.instance.mass > params.home.min_mass):
@@ -90,7 +90,7 @@ class Home(Unit):
 
   def draw(self, screen):
     self.ent.draw(screen)
-    pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
+    pygame.draw.circle(screen, [255,255,0], self.screen_coords, int(self.radius), 0)
 
   def event(self, key):
     if key[pygame.K_SPACE]:
@@ -137,7 +137,7 @@ class Clod(Unit):
     return self.body.GetPosition()
 
   def draw(self):
-    pygame.draw.circle(screen, [255,255,0], self.screenCoords, 4, 0)
+    pygame.draw.circle(screen, [255,255,0], self.screen_coords, 4, 0)
 
   def update(self):
     self.doGravity()
@@ -155,17 +155,18 @@ class Dragon(Unit):
     state().dragons.add(self)
     self.body, shape = physics.dragon_body(spawn_angle, vel)
     shape.SetUserData(self)
+    self.image, self.rect = load_img('dragon.png')
+    self.is_hit = False
+    state().dragons.add(self)
   
   @property
   def pos(self):
     return self.body.GetPosition()
-
-  def update(self):
-    # if self.is_hit:
-      self.doGravity()
   
-  def draw(self, screen):
-    pygame.draw.rect(screen, [255, 127, 80], [self.screenCoords, (20, 20)])
+  def update(self):
+    self.rect.center = self.screen_coords
+    # if self.is_hit:
+    self.doGravity()
   
   def seek_partner(self):
     pass
