@@ -60,6 +60,7 @@ class Home(Unit):
     self.rect = None
     self.pos = vec(0,0)
     self.body = physics.home_body(self.radius)
+    # shape.SetUserData(self)
 
   instance = None
 
@@ -103,7 +104,8 @@ class Clod(Unit):
     super(Clod, self).__init__()
     self.mass = mass
     self.radius = Home.mass_to_radius(mass)
-    self.body = physics.clod_body(self.radius, pos, vel, mass)
+    self.body, shape = physics.clod_body(self.radius, pos, vel, mass)
+    shape.SetUserData(self)
     state().clods.add(self)
     Home.instance.mass -= mass
 
@@ -127,7 +129,8 @@ class Dragon(Unit):
     super(Dragon, self).__init__()
     self.is_hit = False
     state().dragons.add(self)
-    self.body = physics.dragon_body(r, t)
+    self.body, shape = physics.dragon_body(r, t)
+    shape.SetUserData(self)
   
   @property
   def pos(self):
