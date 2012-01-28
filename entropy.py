@@ -4,6 +4,7 @@ from pygame.locals import *
 from common import *
 from game_state import *
 import units
+import cProfile
 
 class Game:
 
@@ -31,12 +32,15 @@ class Game:
     black = [0,0,0]
 
     home = units.Home()
+    units.Home.instance = home
     # home_sprites = pygame.sprite.RenderPlain(home)
 
     def update():
+      GameState.current.update()
       physics.worldStep()
 
     def draw():
+      GameState.current.draw()
       home.draw(self.screen)
 
     while 1:
@@ -52,8 +56,8 @@ class Game:
         if event.type == KEYDOWN:
           if event.key == K_ESCAPE:
             return
-          if event.key == K_LEFT:
-            GameState.current.scroll.x -= 1
+          if event.key == K_SPACE:
+            home.ent.shoot(vec(0,5))
     
       update()
       draw()
@@ -70,3 +74,6 @@ def main():
 
 if __name__ == '__main__':
   main()
+  # cProfile.run('main()')
+
+

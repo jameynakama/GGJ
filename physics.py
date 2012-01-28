@@ -3,8 +3,8 @@ from Box2D import *
 from debugdraw import *
 ### BOX2D STUFF ###
 worldAABB=b2AABB()
-worldAABB.lowerBound = (-100, -100)
-worldAABB.upperBound = ( 100,  100)
+worldAABB.lowerBound = (-1000, -1000)
+worldAABB.upperBound = ( 1000,  1000)
 gravity = b2Vec2(0, 0)
 doSleep = False
 
@@ -14,9 +14,6 @@ vel_iters, pos_iters = 10, 8
 
 b2draw = DebugDraw()
 b2draw.SetFlags(b2draw.e_shapeBit)
-b2draw.viewZoom = 1.
-b2draw.viewCenter = b2Vec2(0,0)
-b2draw.viewOffset = b2Vec2(-200,50)
 world.SetDebugDraw(b2draw)
 
 def worldStep():
@@ -36,3 +33,25 @@ def home_body(radius):
 	body = world.CreateBody(bodyDef)
 	body.CreateShape(shapeDef)
 	return body
+	
+
+def clod_body(radius, pos, vel, mass):
+	bodyDef = b2BodyDef()
+	bodyDef.position = pos
+	
+	shapeDef = b2CircleDef()
+	shapeDef.radius = radius
+	shapeDef.density = 1
+	shapeDef.restitution = 0
+	shapeDef.friction = 1
+
+	filter = b2FilterData()
+	filter.groupIndex = -2
+
+	body = world.CreateBody(bodyDef)
+	shape = body.CreateShape(shapeDef)
+	shape.SetFilterData(filter)
+	body.SetMassFromShapes()
+	body.SetLinearVelocity(vel)
+	return body
+
