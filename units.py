@@ -21,6 +21,9 @@ class Home(Unit):
       self.home = home
       #Cooldown for allowing the player to fire SOILORBS
       self.shot_cool = 20
+      #shot_angle |[-90, 90]|
+      self.shot_angle = 45.0
+      self.cw = True
       
     #Returns [x,y] coordinates for the ent moving around the planet
     #Param: angle -- angle of the ent relative to the Home
@@ -31,22 +34,30 @@ class Home(Unit):
       return vec(math.cos(rad)*self.home.radius, math.sin(rad)*self.home.radius)
 
     def update(self):
+      print 'ent update'
       self.shot_cool -= 1
-      pass
 
-    def draw(self):
-      pass
+    def draw(self, screen):
+      pygame.draw.circle(screen, [255, 0, 255], self.screenCoords, 20, 0)
 
     def shoot(self, vel):
       Clod(self.pos, vel, 0.5)
+
+    def fire(self, angle):
+      speed = 10.0
+      vel = vec(math.cos(math.radians(angle)) * speed, math.sin(math.radians(angle)) * speed)
+      print 'firing object', vec.x, vec.y
+      Clod(self.pos, vel, 0.5 )
 
   def __init__(self):
     super(Home, self).__init__()
 
     self.ent = Home.Ent(self)
     self.angle = 0.0
-    self.angle_delta = 0.05
+    self.angle_mult = 1.0
+    self.angle_delta = 5.0 
     self.mass = 100
+
 
     screen = pygame.display.get_surface()
     self.rect = None
@@ -69,27 +80,36 @@ class Home(Unit):
     pass
 
   def draw(self, screen):
-    self.ent.draw()
-    pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
-    pass
+    self.ent.draw(screen)
+    #pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
 
   def event(self, key):
     if key[pygame.K_SPACE]:
+      self.ent.shot_cool -= 1
       if self.ent.shot_cool < 0:
-        #fire a clod
-        pass
+        #fireang = self.ent.shot_angle + (self.angle * self.angle_mult)
+        fireang = (self.ent.shot_angle *self.angle_mult) + self.angle
+        print fireang
+        self.ent.fire(fireang)
+        self.ent.shot_cool = 10
+    if key[ord('s')]:
+      if self.ent.shot_angle < 90.0:
+        self.ent.shot_angle += 0.5
+      print self.ent.shot_angle
     elif key[ord('w')]:
-      self.mass -= 100
-      print self.mass, self.radius
-    elif key[ord('a')]:
-      print 'a event called'
-      self.angle -= self.angle_delta 
-      self.pos = self.pos + vec(-1,0)
+      if self.ent.shot_angle > 0.5:
+        self.ent.shot_angle -= 0.5
+      print self.ent.shot_angle
+
+    if key[ord('a')]:
+      print 'a event called', self.angle
+      self.angle_mult = -1.0
+      self.angle = self.angle%360.0 - self.angle_delta 
+
     elif key[ord('d')]:
-      print 'd event called'
-      self.angle += self.angle_delta
-      self.pos = self.pos + vec(1,0)
-    
+      print 'd event called', self.angle
+      self.angle_mult = 1.0
+      self.angle = self.angle%360.0 + self.angle_delta
 
 class Clod(Unit):
 
@@ -104,6 +124,10 @@ class Clod(Unit):
   @property
   def pos(self):
     return self.body.GetPosition()
+
+  def draw(self):
+    pygame.draw.circle(screen, [255,255,0], self.screenCoords, 4, 0)
+
 
   def update(self):
     grav = -self.pos
