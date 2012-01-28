@@ -79,7 +79,7 @@ def dragon_body(spawn_angle, vel):
 
 	filter = b2FilterData()
 	filter.categoryBits = params.dragon.collision_category
-	filter.maskBits = 0xffff
+	filter.maskBits = 0xffff - params.dragon.collision_category
 
 	body = world.CreateBody(bodyDef)
 	shape = body.CreateShape(shapeDef)
