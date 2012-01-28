@@ -125,20 +125,19 @@ class Clod(Unit):
 class Dragon(Unit):
   def __init__(self, r, t):
     super(Dragon, self).__init__()
+    self.body = physics.dragon_body(r, t)
+    self.image, self.rect = load_img('dragon.png')
     self.is_hit = False
     state().dragons.add(self)
-    self.body = physics.dragon_body(r, t)
   
   @property
   def pos(self):
     return self.body.GetPosition()
-
+  
   def update(self):
+    self.rect.center = self.screenCoords
     if self.is_hit:
       self.doGravity()
-  
-  def draw(self, screen):
-    pygame.draw.rect(screen, [255, 127, 80], [self.screenCoords, (20, 20)])
   
   def seek_partner(self):
     pass

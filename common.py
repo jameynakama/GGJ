@@ -1,5 +1,5 @@
+import os, math
 import pygame, Box2D
-import math
 from Box2D import *
 import params
 
@@ -31,7 +31,7 @@ def load_img(name, colorkey = None):
     if colorkey == -1:
       colorkey = image.get_at((0,0))
     image.set_colorkey(colorkey, pygame.RLEACCEL)
-  return image
+  return image, image.get_rect()
 
 
 import physics
