@@ -6,4 +6,6 @@ import params
 class CL(Box2D.b2ContactListener):
 
   def Add(self, contact):
-    print contact
+    a = contact.shape1
+    b = contact.shape2
+    # print a, b

@@ -44,7 +44,7 @@ class Game:
     def draw():
       GameState.current.draw(self.screen)
       home.draw(self.screen)
-      
+
 
 
     while 1:
@@ -63,6 +63,7 @@ class Game:
           if event.key == K_SPACE:
             home.ent.shoot(vec(1,1))
     
+      home.event(key)
       update()
       draw()
 

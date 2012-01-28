@@ -20,7 +20,8 @@ vel_iters, pos_iters = 10, 8
 b2draw = DebugDraw()
 b2draw.SetFlags(b2draw.e_shapeBit)
 world.SetDebugDraw(b2draw)
-# world.SetContactListener(contact_listener.CL())
+b2cl = contact_listener.CL()
+world.SetContactListener(b2cl)
 
 def worldStep():
 	global world
@@ -38,7 +39,7 @@ def home_body(radius):
 
 	filter = b2FilterData()
 	filter.categoryBits = params.home.collision_category
-	filter.maskBits = 0xffff - filter.categoryBits
+	filter.maskBits = 0xffff - params.clod.collision_category
 
 	body = world.CreateBody(bodyDef)
 	shape = body.CreateShape(shapeDef)
@@ -57,14 +58,14 @@ def clod_body(radius, pos, vel, mass):
 
 	filter = b2FilterData()
 	filter.categoryBits = params.clod.collision_category
-	filter.maskBits = 0xffff - filter.categoryBits
+	filter.maskBits = 0xffff - params.clod.collision_category - params.home.collision_category
 
 	body = world.CreateBody(bodyDef)
 	shape = body.CreateShape(shapeDef)
 	shape.SetFilterData(filter)
 	body.SetMassFromShapes()
 	body.SetLinearVelocity(vel)
-	return body
+	return body, shape
 
 def dragon_body(r, t):
 	bodyDef = b2BodyDef()
@@ -82,5 +83,5 @@ def dragon_body(r, t):
 	shape = body.CreateShape(shapeDef)
 	shape.SetFilterData(filter)
 	body.SetMassFromShapes()
-	return body
+	return body, shape
 
