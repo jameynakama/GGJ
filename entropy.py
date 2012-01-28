@@ -34,6 +34,7 @@ class Game:
 
     home = units.Home()
     units.Home.instance = home
+    dragon = units.Dragon()
     # home_sprites = pygame.sprite.RenderPlain(home)
 
     def update():
@@ -44,6 +45,8 @@ class Game:
     def draw():
       GameState.current.draw()
       home.draw(self.screen)
+      dragon.draw(self.screen)
+
 
     while 1:
       self.clock.tick(60)
