@@ -40,4 +40,3 @@ class PlayState(GameState):
   def draw(self):
     pass
 
-

@@ -38,7 +38,6 @@ class Home(Unit):
 
     def update(self):
       self.shot_cool -= 1
-      pass
 
     def draw(self):
       pass
@@ -76,12 +75,10 @@ class Home(Unit):
     self.ent.update()
     world.DestroyBody(self.body)
     self.body = physics.home_body(self.radius)
-    pass
 
   def draw(self, screen):
     self.ent.draw()
     pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
-    pass
 
   def event(self, key):
     if key[pygame.K_SPACE]:
@@ -128,13 +125,20 @@ class Clod(Unit):
 class Dragon(Unit):
   def __init__(self):
     super(Dragon, self).__init__()
-    self.position = [0, 0]
-    self.action = 'seeking'
-    # seeking or linked
+    self.action = 'seeking' # seeking or linked
+    self.is_hit = False
+    state().dragons.add(self)
   
+  @property
+  def pos(self):
+    return vec(10, 10)
+
   def update(self):
-    pass
+    if self.is_hit:
+      self.doGravity()
+  
+  def draw(self, screen):
+    pygame.draw.rect(screen, [255, 127, 80], [self.screenCoords, (20, 20)])
   
   def seek_partner(self):
     pass
-
