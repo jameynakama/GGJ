@@ -156,13 +156,15 @@ class Dragon(Unit):
     super(Dragon, self).__init__()
     state().dragons.add(self)
     if not spawn_angle:
-      spawn_angle = math.pi / random.randint(1, 4)
+      is_positive = random.randint(0, 1)
+      if is_positive:
+        spawn_angle = -math.pi / random.randint(1, 4)
+      else:
+        spawn_angle = math.pi / random.randint(1, 4)
     if not vel:
-      vel = vec(random.randint(1, 4), random.randint(1,4)) 
+      vel = vec(random.randint(-4, 4), random.randint(-4, 4)) 
     self.body, shape = physics.dragon_body(spawn_angle, vel)
     shape.SetUserData(self)
-    print "ABOUT TO LOAD DRAGON IMAGE IN UNITS"
-    print entropy.Game.media
     self.image = image
     self.rect = self.image.get_rect()
     self.is_hit = False

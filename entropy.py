@@ -48,6 +48,11 @@ class Game:
     def draw():
       GameState.current.draw(self.screen)
       home.draw(self.screen)
+    
+    def spawn_dragon():
+      units.Dragon(Game.media.dragon)
+    
+    pygame.time.set_timer(USEREVENT+1, 2000)
 
     while 1:
       self.clock.tick(FPS)
@@ -62,10 +67,10 @@ class Game:
         if event.type == KEYDOWN:
           if event.key == K_ESCAPE:
             return
+        if event.type == USEREVENT+1:
+          spawn_dragon()
     
       home.event(key)
-      if (pygame.time.get_ticks() / 1000) % 2 == 0:
-        units.Dragon(Game.media.dragon)
       update()
       draw()
 
