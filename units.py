@@ -149,7 +149,7 @@ class Clod(Unit):
 
 
 class Dragon(Unit):
-  def __init__(self, spawn_angle, vel=None):
+  def __init__(self, spawn_angle=None, vel=None):
     super(Dragon, self).__init__()
     state().dragons.add(self)
     if not spawn_angle:

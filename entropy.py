@@ -27,8 +27,6 @@ class Game:
 
     GameState.current = PlayState()
 
-    units.Dragon(math.pi/3, vec(0, -3))
-    units.Dragon(-math.pi/2)
 
   def run_loop(self):
 
@@ -46,7 +44,6 @@ class Game:
       home.draw(self.screen)
 
 
-    number_of_loops = 0
     while 1:
       self.clock.tick(FPS)
       self.screen.fill(self.back_color)
@@ -62,14 +59,12 @@ class Game:
             return
     
       home.event(key)
-      if number_of_loops == FPS * 2:
+      if (pygame.time.get_ticks() / 1000) % 2 == 0:
         units.Dragon()
       update()
       draw()
 
       pygame.display.flip()
-
-      number_of_loops += 1
 
 
     
