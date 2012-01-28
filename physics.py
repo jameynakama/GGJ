@@ -31,8 +31,8 @@ def home_body(radius):
 	shapeDef.friction = 1
 
 	body = world.CreateBody(bodyDef)
-	body.CreateShape(shapeDef)
-	return body
+	shape = body.CreateShape(shapeDef)
+	return (body)
 	
 
 def clod_body(radius, pos, vel, mass):

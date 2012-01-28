@@ -94,7 +94,7 @@ class DebugDraw(box2d.b2DebugDraw):
 
         pygame.draw.circle(self.surface, color, center, radius, 1)
 
-        p = radius * axis
+        p = radius * b2Vec2(axis)
         pygame.draw.aaline(self.surface, (255,0,0), center, (center[0] - p.x, center[1] + p.y)) 
 
     def DrawPolygon(self, in_vertices, color):

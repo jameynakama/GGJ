@@ -8,6 +8,12 @@ class Unit(pygame.sprite.Sprite, object):
   def __init__(self):
     super(Unit, self).__init__()
 
+  def doGravity(self):
+    grav = -self.pos
+    len = grav.Normalize()
+    grav *= params.home.gravitational_constant * Home.instance.mass / (len*len)
+    self.body.ApplyForce(grav, self.pos)
+
   @property
   def screenCoords(self):
     return GameState.current.toScreen(self.pos)
@@ -38,7 +44,10 @@ class Home(Unit):
       pass
 
     def shoot(self, vel):
-      Clod(self.pos, vel, 0.5)
+      if(Home.instance.mass > params.home.min_mass):
+        Clod(self.pos, vel, 2.5)
+      else:
+        print "Home mass too small to shoot!  hah!"
 
   def __init__(self):
     super(Home, self).__init__()
@@ -46,13 +55,12 @@ class Home(Unit):
     self.ent = Home.Ent(self)
     self.angle = 0.0
     self.angle_delta = 0.05
-    self.mass = 100
+    self.mass = params.home.initial_mass
 
     screen = pygame.display.get_surface()
     self.rect = None
     self.pos = vec(0,0)
     self.body = physics.home_body(self.radius)
-  
 
   instance = None
 
@@ -65,7 +73,9 @@ class Home(Unit):
     return math.sqrt(float(mass)/math.pi)
 
   def update(self):
-    ent.update()
+    self.ent.update()
+    world.DestroyBody(self.body)
+    self.body = physics.home_body(self.radius)
     pass
 
   def draw(self, screen):
@@ -89,7 +99,6 @@ class Home(Unit):
       print 'd event called'
       self.angle += self.angle_delta
       self.pos = self.pos + vec(1,0)
-    
 
 class Clod(Unit):
 
@@ -101,15 +110,19 @@ class Clod(Unit):
     state().clods.add(self)
     Home.instance.mass -= mass
 
+  def __del__(self):
+    Home.instance.mass += self.mass
+
   @property
   def pos(self):
     return self.body.GetPosition()
 
   def update(self):
-    grav = -self.pos
-    len = grav.Normalize()
-    grav *= 0.5 * Home.instance.mass / (len*len)
-    self.body.ApplyForce(grav, self.pos)
+    self.doGravity()
+    if(self.pos.Length() + self.radius < Home.instance.radius):
+      world.DestroyBody(self.body)
+      state().clods.remove(self)
+      del self
 
 
 class Dragon(Unit):

@@ -1,6 +1,7 @@
 import pygame, Box2D
 import math
 from Box2D import *
+import params
 
 vec = b2Vec2
 
