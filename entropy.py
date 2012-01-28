@@ -34,7 +34,6 @@ class Game:
 
     home = units.Home()
     units.Home.instance = home
-    dragon = units.Dragon()
     # home_sprites = pygame.sprite.RenderPlain(home)
 
     def update():
@@ -43,9 +42,9 @@ class Game:
       physics.worldStep()
 
     def draw():
-      GameState.current.draw()
+      # GameState.current.draw(self.screen)
       home.draw(self.screen)
-      dragon.draw(self.screen)
+      
 
 
     while 1:

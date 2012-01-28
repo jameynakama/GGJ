@@ -131,7 +131,7 @@ class Dragon(Unit):
   
   @property
   def pos(self):
-    return vec(10, 10)
+    return self.body.GetPosition()
 
   def update(self):
     if self.is_hit:
