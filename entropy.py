@@ -27,8 +27,8 @@ class Game:
 
     GameState.current = PlayState()
 
-    units.Dragon(15, math.pi/2)
-    units.Dragon(15, -math.pi/2)
+    units.Dragon(math.pi/3, vec(0, -3))
+    units.Dragon(-math.pi/2, vec(0, 2))
 
   def run_loop(self):
 
@@ -46,7 +46,6 @@ class Game:
       home.draw(self.screen)
 
 
-
     while 1:
       self.clock.tick(60)
       self.screen.fill(self.back_color)
@@ -60,8 +59,6 @@ class Game:
         if event.type == KEYDOWN:
           if event.key == K_ESCAPE:
             return
-          if event.key == K_SPACE:
-            home.ent.shoot(vec(1,1))
     
       home.event(key)
       update()

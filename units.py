@@ -149,11 +149,11 @@ class Clod(Unit):
 
 
 class Dragon(Unit):
-  def __init__(self, r, t):
+  def __init__(self, spawn_angle, vel):
     super(Dragon, self).__init__()
     self.is_hit = False
     state().dragons.add(self)
-    self.body, shape = physics.dragon_body(r, t)
+    self.body, shape = physics.dragon_body(spawn_angle, vel)
     shape.SetUserData(self)
   
   @property
@@ -161,7 +161,7 @@ class Dragon(Unit):
     return self.body.GetPosition()
 
   def update(self):
-    if self.is_hit:
+    # if self.is_hit:
       self.doGravity()
   
   def draw(self, screen):
