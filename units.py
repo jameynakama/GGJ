@@ -15,7 +15,7 @@ class Unit(pygame.sprite.Sprite, object):
     self.body.ApplyForce(grav, self.pos)
 
   @property
-  def screenCoords(self):
+  def screen_coords(self):
     return GameState.current.toScreen(self.pos)
 
 class Home(Unit):
@@ -78,7 +78,7 @@ class Home(Unit):
 
   def draw(self, screen):
     self.ent.draw()
-    pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
+    pygame.draw.circle(screen, [255,255,0], self.screen_coords, int(self.radius), 0)
 
   def event(self, key):
     if key[pygame.K_SPACE]:
@@ -135,7 +135,7 @@ class Dragon(Unit):
     return self.body.GetPosition()
   
   def update(self):
-    self.rect.center = self.screenCoords
+    self.rect.center = self.screen_coords
     if self.is_hit:
       self.doGravity()
   
