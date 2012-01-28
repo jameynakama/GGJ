@@ -11,7 +11,7 @@ class Unit(object):
 
 class Home(pygame.sprite.Sprite, Unit):
 
-  class Ent(pygame.sprite.Sprite):
+  class Ent(pygame.sprite.Sprite, Unit):
     def __init__(self, home):
       super(Home.Ent, self).__init__()
       self.home = home
@@ -37,7 +37,8 @@ class Home(pygame.sprite.Sprite, Unit):
 
   def __init__(self):
     super(Home, self).__init__()
-    ent = Home.Ent(self)
+
+    self.ent = Home.Ent(self)
     self.angle = 0.0
     self.mass = 10000
     screen = pygame.display.get_surface()
@@ -54,7 +55,7 @@ class Home(pygame.sprite.Sprite, Unit):
     pass
 
   def draw(self, screen):
-    ent.draw()
+    self.ent.draw()
     # pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
     pass
 

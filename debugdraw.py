@@ -1,7 +1,7 @@
 import Box2D as box2d
 import pygame
-from game_state import GameState
 from Box2D import b2Vec2
+from game_state import GameState
 
 class DebugDraw(box2d.b2DebugDraw):
     """
@@ -103,7 +103,6 @@ class DebugDraw(box2d.b2DebugDraw):
         else: radius = int(radius)
 
         center = self.toScreen(b2Vec2(center_v))
-        print center
         pygame.draw.circle(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), center, radius, 0)
 
         pygame.draw.circle(self.surface, color, center, radius, 1)
