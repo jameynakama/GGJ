@@ -23,7 +23,7 @@ class Home(pygame.sprite.Sprite):
     self.mass = 10000
     screen = pygame.display.get_surface()
     self.rect = None
-    self.pos = [400,400]
+    self.position = [400,400]
 
   @property
   def radius(self):
@@ -33,4 +33,18 @@ class Home(pygame.sprite.Sprite):
     pass
 
   def draw(self, screen):
-    pygame.draw.circle(screen, [255,255,0], self.pos, int(self.radius), 0)
+    pygame.draw.circle(screen, [255,255,0], self.position, int(self.radius), 0)
+
+
+class Dragon(pygame.sprite.Sprite):
+  def __init__(self):
+    super(Dragon, self).__init__()
+    self.position = [0, 0]
+    self.action = 'seeking'
+    # seeking or linked
+  
+  def update(self):
+    pass
+  
+  def seek_partner(self):
+    pass
