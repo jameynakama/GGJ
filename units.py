@@ -91,7 +91,7 @@ class Home(Unit):
         fireang = (self.ent.shot_angle *self.angle_mult) + self.angle
         print fireang
         self.ent.fire(fireang)
-        self.ent.shot_cool = 10
+        self.ent.shot_cool = 30
     if key[ord('s')]:
       if self.ent.shot_angle < 90.0:
         self.ent.shot_angle += 0.5
