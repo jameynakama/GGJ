@@ -46,6 +46,7 @@ class Game:
       home.draw(self.screen)
 
 
+    number_of_loops = 0
     while 1:
       self.clock.tick(FPS)
       self.screen.fill(self.back_color)
@@ -61,10 +62,14 @@ class Game:
             return
     
       home.event(key)
+      if number_of_loops == FPS * 2:
+        units.Dragon()
       update()
       draw()
 
       pygame.display.flip()
+
+      number_of_loops += 1
 
 
     
