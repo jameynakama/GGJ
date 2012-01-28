@@ -1,5 +1,6 @@
 import pygame, Box2D
 import math
+import entropy
 
 
 class Home(pygame.sprite.Sprite):
@@ -28,5 +29,4 @@ class Home(pygame.sprite.Sprite):
     return math.sqrt(float(self.mass)/math.pi)
 
   def update(self):
-    self.rect = pygame.draw.circle(screen, [255,255,0], self.pos, self.radius, width=0)
-    
+    pass    
