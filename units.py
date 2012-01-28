@@ -1,15 +1,13 @@
 import pygame, Box2D
 import math
-import entropy
-from game_state import GameState
 from common import *
+from game_state import GameState
 
 class Unit(object):
 
   @property
   def screenCoords(self):
-    p = self.pos - GameState.current.scroll
-    return (int(p.x), int(p.y))
+    return GameState.current.toScreen(self.pos)
 
 class Home(pygame.sprite.Sprite, Unit):
 
@@ -45,6 +43,7 @@ class Home(pygame.sprite.Sprite, Unit):
     screen = pygame.display.get_surface()
     self.rect = None
     self.pos = vec(0,0)
+    self.body = physics.home_body(self.radius)
 
   @property
   def radius(self):
@@ -56,10 +55,28 @@ class Home(pygame.sprite.Sprite, Unit):
 
   def draw(self, screen):
     ent.draw()
-    pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
+    # pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
+    pass
+
+class Clod(pygame.sprite.Sprite, Unit):
+  def __init__(self, pos, vel, mass):
+    super(Clod, self).__init__()
+    self.mass = mass
+    self.radius = 1
+    self.body = Game.world.CreateDynamicBody(
+        position=pos,
+        fixtures=b2FixtureDef(
+           shape=b2CircleShape(radius=self.radius),
+           density=0.5,
+           restitution=0,
+           friction=0.5
+           ),
+        damping=0
+        )
+    print dir(self.body)
 
 
-class Dragon(pygame.sprite.Sprite):
+class Dragon(pygame.sprite.Sprite, Unit):
   def __init__(self):
     super(Dragon, self).__init__()
     self.position = [0, 0]

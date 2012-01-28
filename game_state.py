@@ -1,6 +1,5 @@
 import pygame, Box2D
 import math
-import entropy
 from common import *
 
 class GameState(object):
@@ -17,6 +16,11 @@ class GameState(object):
   def draw(self):
     pass
 
+  def toScreen(self, v):
+    p = v - self.scroll
+    return (int(p.x), int(p.y))
+
+
 class PlayState(GameState):
 
   def __init__(self):
@@ -31,5 +35,3 @@ class PlayState(GameState):
     pass
 
 
-def state():
-  return GameState.current

@@ -1,5 +1,7 @@
 import Box2D as box2d
 import pygame
+from game_state import GameState
+from Box2D import b2Vec2
 
 class DebugDraw(box2d.b2DebugDraw):
     """
@@ -100,7 +102,8 @@ class DebugDraw(box2d.b2DebugDraw):
         if radius < 1: radius = 1
         else: radius = int(radius)
 
-        center = self.toScreen(center_v)
+        center = self.toScreen(b2Vec2(center_v))
+        print center
         pygame.draw.circle(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), center, radius, 0)
 
         pygame.draw.circle(self.surface, color, center, radius, 1)
@@ -131,7 +134,8 @@ class DebugDraw(box2d.b2DebugDraw):
         Input:  (x, y) - a tuple in world coordinates
         Output: (x, y) - a tuple in screen coordinates
         """
-        return ((pt[0] * self.viewZoom) - self.viewOffset.x, self.height - ((pt[1] * self.viewZoom) - self.viewOffset.y))
+        return GameState.current.toScreen(pt)
+        # return ((pt[0] * self.viewZoom) - self.viewOffset.x, self.height - ((pt[1] * self.viewZoom) - self.viewOffset.y))
     def scaleValue(self, value):
         """
         Input: value - unscaled value

@@ -1,11 +1,12 @@
 import os, sys, pygame
 from Box2D import *
 from pygame.locals import *
-from debugdraw import DebugDraw
-import units
+from common import *
 from game_state import *
+import units
 
 class Game:
+
   def __init__(self):
     pygame.init()
 
@@ -18,27 +19,12 @@ class Game:
     self.backgd = pygame.Surface(self.screen.get_size())
     back_color = [128,128,128]
 
+    physics.b2draw.surface = self.screen
+
     self.frames = 0
     self.show = pygame.sprite.RenderClear()
 
     GameState.current = PlayState()
-
-    ### BOX2D STUFF ###
-    worldAABB=b2AABB()
-    worldAABB.lowerBound = (-100, -100)
-    worldAABB.upperBound = ( 100,  100)
-    gravity = b2Vec2(0, 0)
-    doSleep = False
-    self.world = b2World(worldAABB, gravity, doSleep)
-    self.timeStep = 1.0 / 60
-    self.vel_iters, self.pos_iters = 10, 8
-
-    self.b2draw = DebugDraw()
-    self.b2draw.SetFlags(self.b2draw.e_shapeBit) # and whatever else you want it to draw 
-    self.b2draw.viewZoom = 1.
-    self.b2draw.viewCenter = b2Vec2(0,0)
-    self.b2draw.viewOffset = b2Vec2(-200,50)
-    self.world.SetDebugDraw(self.b2draw)
 
   def run_loop(self):
     
@@ -48,7 +34,7 @@ class Game:
     # home_sprites = pygame.sprite.RenderPlain(home)
 
     def update():
-      self.world.Step(self.timeStep, self.vel_iters, self.pos_iters)
+      physics.worldStep()
 
     def draw():
       home.draw(self.screen)
@@ -66,6 +52,8 @@ class Game:
         if event.type == KEYDOWN:
           if event.key == K_ESCAPE:
             return
+          if event.key == K_LEFT:
+            GameState.current.scroll.x -= 1
     
       update()
       draw()

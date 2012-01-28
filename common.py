@@ -1,12 +1,15 @@
 import pygame, Box2D
 import math
-import entropy
-from game_state import *
 from Box2D import *
 
-# class vec(b2Vec2, list):
-#   def tup(self):
-#     return (self.x, self.y)
+vec = b2Vec2
+
+import physics
+from physics import world
+
+def toScreen(v):
+  import game_state
+  return game_state.GameState.current.toScreen(v)
 
 vec = b2Vec2
 
@@ -15,7 +18,6 @@ class Media():
     #Load all media needed(images, animations, sounds, etc)
     self.test = load_img('test.png') 
   
-
 '''
 Returns the image surface resource only
 '''
