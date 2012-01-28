@@ -3,6 +3,8 @@ import pygame, Box2D
 from Box2D import *
 import params
 
+FPS = 60
+
 vec = b2Vec2
 
 def toScreen(v):

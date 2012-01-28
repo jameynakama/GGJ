@@ -1,5 +1,5 @@
 import pygame, Box2D
-import math
+import math, random
 from common import *
 from game_state import GameState, state
 
@@ -151,20 +151,29 @@ class Clod(Unit):
 
 
 class Dragon(Unit):
-  def __init__(self, spawn_angle, vel):
+  def __init__(self, spawn_angle=None, vel=None):
     super(Dragon, self).__init__()
-    self.is_hit = False
     state().dragons.add(self)
+    if not spawn_angle:
+      spawn_angle = math.pi / random.randint(1, 4)
+    if not vel:
+      vel = vec(random.randint(1, 4), random.randint(1,4)) 
     self.body, shape = physics.dragon_body(spawn_angle, vel)
     shape.SetUserData(self)
     self.image, self.rect = load_img('dragon.png')
     self.is_hit = False
     state().dragons.add(self)
 
+    print "\nDragon spawned!\nangle: {init_angle}\nvelocity: {init_velocity}".format(
+          init_angle = spawn_angle,
+          init_velocity = vel,
+          )
+
+
   @property
   def category(self):
     return "dragon"
-  
+    
   @property
   def pos(self):
     return self.body.GetPosition()
@@ -174,5 +183,5 @@ class Dragon(Unit):
     # if self.is_hit:
     self.doGravity()
   
-  def seek_partner(self):
-    pass
+  # def seek_partner(self):
+  #   pass
