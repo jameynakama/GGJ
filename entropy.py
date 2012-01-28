@@ -8,6 +8,8 @@ import cProfile
 
 class Game:
 
+  media = None
+
   def __init__(self):
     pygame.init()
 
@@ -27,6 +29,10 @@ class Game:
 
     GameState.current = PlayState()
 
+    Game.media = Media()
+    Game.media.dragon = load_img('dragon.png')
+
+
 
   def run_loop(self):
 
@@ -43,7 +49,6 @@ class Game:
       GameState.current.draw(self.screen)
       home.draw(self.screen)
 
-
     while 1:
       self.clock.tick(FPS)
       self.screen.fill(self.back_color)
@@ -59,16 +64,13 @@ class Game:
             return
     
       home.event(key)
-      # if (pygame.time.get_ticks() / 1000) % 2 == 0:
-      #   units.Dragon()
+      if (pygame.time.get_ticks() / 1000) % 2 == 0:
+        units.Dragon(Game.media.dragon)
       update()
       draw()
 
-      if (pygame.time.get_ticks() / 1000) % 2:
-        print "ok"
 
       pygame.display.flip()
-
 
     
 

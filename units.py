@@ -1,6 +1,7 @@
 import pygame, Box2D
 import math, random
 from common import *
+import entropy
 from game_state import GameState, state
 
 class Unit(pygame.sprite.Sprite, object):
@@ -151,7 +152,7 @@ class Clod(Unit):
 
 
 class Dragon(Unit):
-  def __init__(self, spawn_angle=None, vel=None):
+  def __init__(self, image, spawn_angle=None, vel=None):
     super(Dragon, self).__init__()
     state().dragons.add(self)
     if not spawn_angle:
@@ -160,7 +161,10 @@ class Dragon(Unit):
       vel = vec(random.randint(1, 4), random.randint(1,4)) 
     self.body, shape = physics.dragon_body(spawn_angle, vel)
     shape.SetUserData(self)
-    self.image, self.rect = load_img('dragon.png')
+    print "ABOUT TO LOAD DRAGON IMAGE IN UNITS"
+    print entropy.Game.media
+    self.image = image
+    self.rect = self.image.get_rect()
     self.is_hit = False
     state().dragons.add(self)
 

@@ -20,6 +20,7 @@ class Media():
   def __init__(self):
     #Load all media needed(images, animations, sounds, etc)
     self.test = load_img('test.png') 
+    self.dragon = None
   
 '''
 Returns the image surface resource only
@@ -33,7 +34,7 @@ def load_img(name, colorkey = None):
     if colorkey == -1:
       colorkey = image.get_at((0,0))
     image.set_colorkey(colorkey, pygame.RLEACCEL)
-  return image, image.get_rect()
+  return image
 
 
 import physics
