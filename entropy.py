@@ -59,10 +59,13 @@ class Game:
             return
     
       home.event(key)
-      if (pygame.time.get_ticks() / 1000) % 2 == 0:
-        units.Dragon()
+      # if (pygame.time.get_ticks() / 1000) % 2 == 0:
+      #   units.Dragon()
       update()
       draw()
+
+      if (pygame.time.get_ticks() / 1000) % 2:
+        print "ok"
 
       pygame.display.flip()
 
