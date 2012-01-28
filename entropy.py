@@ -1,4 +1,5 @@
 import os, sys, pygame, Box2D 
+from pygame.locals import *
 
 class Game:
   def __init__(self):
@@ -27,6 +28,13 @@ class Game:
 
       pygame.event.pump()
       key = pygame.key.get_pressed()
+
+      for event in pygame.event.get():
+        if even.type == pygame.QUIT:
+          return
+        if event.type == KEYDOWN:
+          if event.key == K_ESCAPE:
+            return
 
       pygame.display.flip()
 
