@@ -4,6 +4,7 @@ import entropy
 
 
 class Home(pygame.sprite.Sprite):
+
   class Ent(pygame.sprite.Sprite):
     def __init__(self):
       super(Ent, self).__init__()
@@ -19,7 +20,7 @@ class Home(pygame.sprite.Sprite):
   def __init__(self):
     super(Home, self).__init__()
     self.angle = 0.0
-    self.mass = 100
+    self.mass = 10000
     screen = pygame.display.get_surface()
     self.rect = None
     self.pos = [400,400]
@@ -29,4 +30,7 @@ class Home(pygame.sprite.Sprite):
     return math.sqrt(float(self.mass)/math.pi)
 
   def update(self):
-    pass    
+    pass
+
+  def draw(self, screen):
+    pygame.draw.circle(screen, [255,255,0], self.pos, int(self.radius), 0)

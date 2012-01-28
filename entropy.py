@@ -1,5 +1,7 @@
-import os, sys, pygame, Box2D 
+import os, sys, pygame
+from Box2D import *
 from pygame.locals import *
+from debugdraw import DebugDraw
 import units
 
 class Game:
@@ -18,15 +20,37 @@ class Game:
     self.frames = 0
     self.show = pygame.sprite.RenderClear()
 
+    ### BOX2D STUFF ###
+    worldAABB=b2AABB()
+    worldAABB.lowerBound = (-100, -100)
+    worldAABB.upperBound = ( 100,  100)
+    gravity = b2Vec2(0, 0)
+    doSleep = False
+    self.world = b2World(worldAABB, gravity, doSleep)
+    self.timeStep = 1.0 / 60
+    self.vel_iters, self.pos_iters = 10, 8
+
+    self.b2draw = DebugDraw()
+    self.b2draw.SetFlags(self.b2draw.e_shapeBit) # and whatever else you want it to draw 
+    self.b2draw.viewZoom = 1.
+    self.b2draw.viewCenter = b2Vec2(0,0)
+    self.b2draw.viewOffset = b2Vec2(-200,50)
+    self.world.SetDebugDraw(self.b2draw)
+
   def run_loop(self):
     
     black = [0,0,0]
 
     home = units.Home()
-    home_sprites = pygame.sprite.RenderPlain(home)
+    # home_sprites = pygame.sprite.RenderPlain(home)
 
-    go = True
-    while go:
+    def update():
+      self.world.Step(self.timeStep, self.vel_iters, self.pos_iters)
+
+    def draw():
+      home.draw(self.screen)
+
+    while 1:
       self.clock.tick(60)
       self.screen.fill(black)
 
@@ -39,15 +63,14 @@ class Game:
         if event.type == KEYDOWN:
           if event.key == K_ESCAPE:
             return
+    
+      update()
+      draw()
 
-      home_sprites.update()
-      # the radius is hard-coded below just to get the ball rolling.
-      # the update method for Home should calculate its position eventually
-      pygame.draw.circle(self.screen, [255,255,0], [400,400], int(home.radius), 0)
-      # we should also eventually be able to say something like
-      # home_sprites.draw(screen) instead of this
       pygame.display.flip()
 
+
+    
 
 def main():
   game = Game()
