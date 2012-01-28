@@ -11,9 +11,9 @@ class Unit(object):
 
 class Home(pygame.sprite.Sprite, Unit):
 
-  class Ent(pygame.sprite.Sprite, home):
-    def __init__(self):
-      super(Ent, self).__init__()
+  class Ent(pygame.sprite.Sprite):
+    def __init__(self, home):
+      super(Home.Ent, self).__init__()
       self.home = home
       #Cooldown for allowing the player to move
       self.move_cool = 5
@@ -37,7 +37,7 @@ class Home(pygame.sprite.Sprite, Unit):
 
   def __init__(self):
     super(Home, self).__init__()
-    ent = Ent(self)
+    ent = Home.Ent(self)
     self.angle = 0.0
     self.mass = 10000
     screen = pygame.display.get_surface()
