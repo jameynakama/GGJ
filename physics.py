@@ -39,7 +39,7 @@ def home_body(radius):
 
 	filter = b2FilterData()
 	filter.categoryBits = params.home.collision_category
-	filter.maskBits = 0xffff - filter.categoryBits
+	filter.maskBits = 0xffff - params.clod.collision_category
 
 	body = world.CreateBody(bodyDef)
 	shape = body.CreateShape(shapeDef)
@@ -58,7 +58,7 @@ def clod_body(radius, pos, vel, mass):
 
 	filter = b2FilterData()
 	filter.categoryBits = params.clod.collision_category
-	filter.maskBits = 0xffff - filter.categoryBits
+	filter.maskBits = 0xffff - params.clod.collision_category - params.home.collision_category
 
 	body = world.CreateBody(bodyDef)
 	shape = body.CreateShape(shapeDef)

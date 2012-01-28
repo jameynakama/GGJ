@@ -40,7 +40,6 @@ class Home(Unit):
       return vec(math.cos(rad)*self.home.radius, math.sin(rad)*self.home.radius)
 
     def update(self):
-      print 'ent update'
       self.shot_cool -= 1
 
     def draw(self, screen):
@@ -90,7 +89,7 @@ class Home(Unit):
     self.body = physics.home_body(self.radius)
 
   def draw(self, screen):
-    self.ent.draw()
+    self.ent.draw(screen)
     pygame.draw.circle(screen, [255,255,0], self.screenCoords, int(self.radius), 0)
 
   def event(self, key):
@@ -120,12 +119,13 @@ class Home(Unit):
       self.angle_mult = 1.0
       self.angle = self.angle + self.angle_delta
 
+class Clod(Unit):
   def __init__(self, pos, vel, mass):
     super(Clod, self).__init__()
     self.mass = mass
     self.radius = Home.mass_to_radius(mass)
-    self.body, shape = physics.clod_body(self.radius, pos, vel, mass)
-    shape.SetUserData(self)
+    self.body, self.shape = physics.clod_body(self.radius, pos, vel, mass)
+    self.shape.SetUserData(self)
     state().clods.add(self)
     Home.instance.mass -= mass
 
@@ -139,12 +139,12 @@ class Home(Unit):
   def draw(self):
     pygame.draw.circle(screen, [255,255,0], self.screenCoords, 4, 0)
 
-
   def update(self):
     self.doGravity()
     if(self.pos.Length() + self.radius < Home.instance.radius):
       world.DestroyBody(self.body)
       state().clods.remove(self)
+      self.shape.ClearUserData()
       del self
 
 
