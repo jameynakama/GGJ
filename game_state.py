@@ -38,6 +38,6 @@ class PlayState(GameState):
     self.dragons.update()
 
   def draw(self, screen):
-    self.clods.draw(screen)
+    # self.clods.draw(screen)
     self.dragons.draw(screen)
 
