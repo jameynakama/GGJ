@@ -8,6 +8,8 @@ import cProfile
 
 class Game:
 
+  media = None
+
   def __init__(self):
     pygame.init()
 
@@ -27,9 +29,10 @@ class Game:
 
     GameState.current = PlayState()
 
-    units.Dragon(15, math.pi/2)
-    self.test = units.Dragon(15, -math.pi/2).image
 
+    Game.media = Media()
+    Media.media = Game.media
+    Game.media.dragon = load_img('dragon.png')
 
 
   def run_loop(self):
@@ -46,9 +49,13 @@ class Game:
     def draw():
       GameState.current.draw(self.screen)
       home.draw(self.screen)
+    
+    def spawn_dragon():
+      units.Dragon(Game.media.dragon)
+    
+    spawn_dragon()
+    # pygame.time.set_timer(USEREVENT+1, 2000)
 
-    angle = 0.0
-    where = [200, 200]
     while 1:
       self.clock.tick(60)
       self.screen.fill(self.back_color)
@@ -65,18 +72,13 @@ class Game:
           if event.key == K_SPACE:
             home.ent.shoot(vec(1,1))
       
-      angle += 1.0
-
-      self.test = rot_center(self.test, angle)
-      self.test_rect = self.test.get_rect()
-
 
       home.event(key)
       update()
       draw()
 
-      pygame.display.flip()
 
+      pygame.display.flip()
 
     
 
@@ -88,5 +90,4 @@ def main():
 if __name__ == '__main__':
   main()
   # cProfile.run('main()')
-
 

@@ -30,14 +30,17 @@ class PlayState(GameState):
     super(PlayState, self).__init__()
     self.scroll = vec(-400,-400)
 
+    self.cannon_group = pygame.sprite.RenderClear()
     self.clods = pygame.sprite.RenderClear()
     self.dragons = pygame.sprite.RenderClear()
 
   def update(self):
     self.clods.update()
     self.dragons.update()
+    self.cannon_group.update()
 
   def draw(self, screen):
     # self.clods.draw(screen)
     self.dragons.draw(screen)
+    self.cannon_group.draw(screen)
 

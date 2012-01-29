@@ -1,6 +1,7 @@
 import pygame, Box2D
 import math
 from common import *
+import entropy
 from game_state import GameState, state
 
 class Unit(pygame.sprite.Sprite, object):
@@ -13,6 +14,9 @@ class Unit(pygame.sprite.Sprite, object):
     len = grav.Normalize()
     grav *= params.home.gravitational_constant * Home.instance.mass / (len*len)
     self.body.ApplyForce(grav, self.pos)
+  
+  def draw(self, screen):
+    super(Unit, self).draw(screen)
 
   @property
   def screen_coords(self):
@@ -21,6 +25,9 @@ class Unit(pygame.sprite.Sprite, object):
 class Home(Unit):
 
   class Ent(Unit):
+
+    image = None
+
     def __init__(self, home):
       super(Home.Ent, self).__init__()
 
@@ -28,8 +35,12 @@ class Home(Unit):
       #Cooldown for allowing the player to fire SOILORBS
       self.shot_cool = 20
       #shot_angle |[-90, 90]|
-      self.shot_angle = 45.0
+      self.shot_angle = 0.0
+      self.start_angle = -90.0
       self.cw = True
+      Home.Ent.image = self.image = Media.media.cannon
+      self.rect = self.image.get_rect()
+      state().cannon_group.add(self)
       
     #Returns [x,y] coordinates for the ent moving around the planet
     #Param: angle -- angle of the ent relative to the Home
@@ -41,9 +52,28 @@ class Home(Unit):
 
     def update(self):
       self.shot_cool -= 1
+    
+    @property 
+    def cannon_origin(self):
+      return (math.cos(math.radians(self.home.angle)), math.sin(math.radians(self.home.angle)))
 
     def draw(self, screen):
       pygame.draw.circle(screen, [255, 0, 255], self.screen_coords, 20, 0)
+
+      self.rect = self.image.get_rect()
+      self.rect.move_ip(self.screen_coords)
+      pygame.draw.rect(screen, (255, 0, 0), self.rect, 1)
+
+
+      self.image = pygame.transform.rotozoom(Home.Ent.image, -self.home.angle+(self.shot_angle*-self.home.angle_mult), 0.5)
+      tangle = self.image.get_rect()
+      tp = tangle.topleft
+      tangle.move_ip(tp[0]-tangle.center[0], tp[1]-tangle.center[1])
+      print self.shot_angle, self.home.angle
+      #self.rect = rot_point_img_rect(screen, Home.Ent.image, self.rect.topleft, (400, 400), 0, -self.home.angle+(self.shot_angle*-self.home.angle_mult)  )
+      #rot_point_img(screen, Home.Ent.image, self.rect.topleft, (400, 400), 0, -self.home.angle+(self.shot_angle*-self.home.angle_mult)  )
+
+      # super(Home.Ent, self).draw(screen)
 
     def shoot(self, vel):
       if(Home.instance.mass > params.home.min_mass):
@@ -149,14 +179,32 @@ class Clod(Unit):
 
 
 class Dragon(Unit):
-  def __init__(self, r, t):
+  def __init__(self, image):
     super(Dragon, self).__init__()
-    self.body, shape = physics.dragon_body(r, t)
-    shape.SetUserData(self)
-    self.image, self.rect = load_img('dragon.png')
+    state().dragons.add(self)
+
+    spawn_angle = math.pi * random.uniform(0, 2)
+    speed = -random.uniform(1, 2)
+
+    vel = polar_vec(speed, spawn_angle / random.uniform(-0.5, 0.5))
+
+    self.body, shape = physics.dragon_body(spawn_angle, vel)
+    for s in shape: s.SetUserData(self)
+
+    self.image = image
+    self.rect = self.image.get_rect()
     self.is_hit = False
     state().dragons.add(self)
-  
+
+    print "\nDragon spawned!\nangle: {init_angle}\nvelocity: {init_velocity}".format(
+          init_angle = spawn_angle,
+          init_velocity = vel,
+          )
+
+  def take_hit(self):
+    self.is_hit = True
+    self.body.SetLinearVelocity(self.body.GetLinearVelocity() * 0.2)
+
   @property
   def pos(self):
     return self.body.GetPosition()
