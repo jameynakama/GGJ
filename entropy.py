@@ -70,8 +70,10 @@ class Game:
           spawn_dragon()
     
       home.event(key)
+
       update()
       draw()
+      self.frames += 1
 
 
       pygame.display.flip()
@@ -86,5 +88,4 @@ def main():
 if __name__ == '__main__':
   main()
   # cProfile.run('main()')
-
 

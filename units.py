@@ -55,7 +55,6 @@ class Home(Unit):
     def fire(self, angle):
       speed = 10.0
       vel = vec(math.cos(math.radians(angle)) * speed, math.sin(math.radians(angle)) * speed)
-      print 'firing object', vec.x, vec.y
       Clod(self.pos, vel, 0.5 )
 
   def __init__(self):
@@ -98,17 +97,14 @@ class Home(Unit):
       self.ent.shot_cool -= 1
       if self.ent.shot_cool < 0:
         fireang = (self.ent.shot_angle *self.angle_mult) + self.angle
-        print fireang
         self.ent.fire(fireang)
         self.ent.shot_cool = 30
     if key[ord('s')]:
       if self.ent.shot_angle < 90.0:
-        self.ent.shot_angle += 0.5
-      print self.ent.shot_angle
+        self.ent.shot_angle += 1.5
     elif key[ord('w')]:
       if self.ent.shot_angle > 0.5:
-        self.ent.shot_angle -= 0.5
-      print self.ent.shot_angle
+        self.ent.shot_angle -= 1.5
 
     if key[ord('a')]:
       self.angle_mult = -1.0
@@ -186,18 +182,16 @@ class Dragon(Unit):
           init_velocity = self.aim,
           )
 
+  def take_hit(self):
+    self.is_hit = True
+    self.body.SetLinearVelocity(self.body.GetLinearVelocity() * 0.2)
 
-  @property
-  def category(self):
-    return "dragon"
-    
   @property
   def pos(self):
     return self.body.GetPosition()
   
   def update(self):
     self.rect.center = self.screen_coords
-    # if self.is_hit:
     self.doGravity()
   
   # def seek_partner(self):
