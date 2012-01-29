@@ -33,7 +33,6 @@ class Game:
     Game.media.dragon = load_img('dragon.png')
 
 
-
   def run_loop(self):
 
     home = units.Home()

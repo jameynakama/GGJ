@@ -152,18 +152,29 @@ class Clod(Unit):
 
 
 class Dragon(Unit):
-  def __init__(self, image, spawn_angle=None, vel=None):
+  def __init__(self, image):
     super(Dragon, self).__init__()
     state().dragons.add(self)
-    if not spawn_angle:
-      is_positive = random.randint(0, 1)
-      if is_positive:
-        spawn_angle = -math.pi / random.randint(1, 4)
-      else:
-        spawn_angle = math.pi / random.randint(1, 4)
-    if not vel:
-      vel = vec(random.randint(-4, 4), random.randint(-4, 4)) 
-    self.body, shape = physics.dragon_body(spawn_angle, vel)
+
+
+    # find slope to home
+    # normalize for angle
+    target = [400.0,400.0]
+    while True:
+      x, y = random.randint(0, 800), random.randint(0, 800)
+      if (x < 100 or x > 700) and (y < 100 or y > 700):
+        self.xpos = x
+        self.ypos = y
+        break
+    spawn_pos = [self.xpos, self.ypos]
+    speed = 3 
+    if spawn_pos[0] > spawn_pos[1]:
+      self.aim = vec((spawn_pos[0]-target[0])/math.fabs(spawn_pos[0]), (spawn_pos[1]-target[1])/math.fabs(spawn_pos[0]))
+    else:
+      self.aim =vec((spawn_pos[0]-target[0])/math.fabs(spawn_pos[1]), (spawn_pos[1]-target[1])/math.fabs(spawn_pos[1]))
+    spawn_angle = math.pi / 2
+
+    self.body, shape = physics.dragon_body(spawn_angle, self.aim)
     shape.SetUserData(self)
     self.image = image
     self.rect = self.image.get_rect()
@@ -172,7 +183,7 @@ class Dragon(Unit):
 
     print "\nDragon spawned!\nangle: {init_angle}\nvelocity: {init_velocity}".format(
           init_angle = spawn_angle,
-          init_velocity = vel,
+          init_velocity = self.aim,
           )
 
 
