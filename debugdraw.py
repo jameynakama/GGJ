@@ -51,7 +51,7 @@ class DebugDraw(box2d.b2DebugDraw):
         Draw the line segment from p1-p2 with the specified color.
         """
         color = self.convertColor(color)
-        pygame.draw.aaline(self.surface, color, self.toScreen(p1), self.toScreen(p2))
+        pygame.draw.aaline(self.surface, color, self.toScreen(b2Vec2(p1)), self.toScreen(b2Vec2(p2)))
 
     def DrawXForm(self, xf):
         """
@@ -106,7 +106,7 @@ class DebugDraw(box2d.b2DebugDraw):
         vertices = [self.toScreen(v) for v in in_vertices]
         pygame.draw.polygon(self.surface, color, vertices, 1)
         
-    def DrawSolidPolygon(self, in_vertices, bluff, color):
+    def DrawSolidPolygon(self, in_vertices, color):
         """
         Draw a filled polygon given the world vertices in_vertices (tuples) with the specified color.
         """

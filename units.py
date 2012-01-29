@@ -15,9 +15,6 @@ class Unit(pygame.sprite.Sprite, object):
     grav *= params.home.gravitational_constant * Home.instance.mass / (len*len)
     self.body.ApplyForce(grav, self.pos)
   
-  def draw(self, screen):
-    super(Unit, self).draw(screen)
-
   @property
   def screen_coords(self):
     return GameState.current.toScreen(self.pos)
@@ -64,14 +61,12 @@ class Home(Unit):
       self.rect.move_ip(self.screen_coords)
       pygame.draw.rect(screen, (255, 0, 0), self.rect, 1)
 
-
       self.image = pygame.transform.rotozoom(Home.Ent.image, -self.home.angle+(self.shot_angle*-self.home.angle_mult), 0.5)
       tangle = self.image.get_rect()
       tp = tangle.topleft
       tangle.move_ip(tp[0]-tangle.center[0], tp[1]-tangle.center[1])
-      print self.shot_angle, self.home.angle
-      #self.rect = rot_point_img_rect(screen, Home.Ent.image, self.rect.topleft, (400, 400), 0, -self.home.angle+(self.shot_angle*-self.home.angle_mult)  )
-      #rot_point_img(screen, Home.Ent.image, self.rect.topleft, (400, 400), 0, -self.home.angle+(self.shot_angle*-self.home.angle_mult)  )
+      # self.rect = rot_point_img_rect(screen, Home.Ent.image, self.rect.topleft, (400, 400), 0, -self.home.angle+(self.shot_angle*-self.home.angle_mult)  )
+      rot_point_img(screen, Home.Ent.image, self.rect.topleft, (400, 400), 0, -self.home.angle+(self.shot_angle*-self.home.angle_mult)  )
 
       # super(Home.Ent, self).draw(screen)
 
@@ -127,7 +122,6 @@ class Home(Unit):
       self.ent.shot_cool -= 1
       if self.ent.shot_cool < 0:
         fireang = (self.ent.shot_angle *self.angle_mult) + self.angle
-        print fireang
         self.ent.fire(fireang)
         self.ent.shot_cool = 30
     if key[ord('s')]:
@@ -159,9 +153,6 @@ class Clod(Unit):
     state().clods.add(self)
     Home.instance.mass -= mass
 
-  def __del__(self):
-    Home.instance.mass += self.mass
-
   @property
   def pos(self):
     return self.body.GetPosition()
@@ -171,7 +162,14 @@ class Clod(Unit):
 
   def update(self):
     self.doGravity()
-    if(self.pos.Length() + self.radius < Home.instance.radius):
+    r = self.pos.Length()
+    if(r + self.radius < Home.instance.radius):
+      Home.instance.mass += self.mass
+      world.DestroyBody(self.body)
+      state().clods.remove(self)
+      self.shape.ClearUserData()
+      del self
+    elif(r > params.game.max_distance):
       world.DestroyBody(self.body)
       state().clods.remove(self)
       self.shape.ClearUserData()
@@ -179,20 +177,25 @@ class Clod(Unit):
 
 
 class Dragon(Unit):
-  def __init__(self, image):
+
+  all = []
+
+  def __init__(self):
     super(Dragon, self).__init__()
     state().dragons.add(self)
+    Dragon.all.append(self)
 
     spawn_angle = math.pi * random.uniform(0, 2)
     speed = -random.uniform(1, 2)
 
     vel = polar_vec(speed, spawn_angle / random.uniform(-0.5, 0.5))
 
-    self.body, shape = physics.dragon_body(spawn_angle, vel)
-    for s in shape: s.SetUserData(self)
+    # pos = polar_vec(params.dragon.spawn_distance, spawn_angle)
+    pos = vec(10, -10)
+    self.bodies, self.shapes = physics.dragon_body(pos, vel)
+    self.body = self.bodies[0]
+    for s in self.shapes: s.SetUserData(self)
 
-    self.image = image
-    self.rect = self.image.get_rect()
     self.is_hit = False
     state().dragons.add(self)
 
@@ -210,9 +213,43 @@ class Dragon(Unit):
     return self.body.GetPosition()
   
   def update(self):
-    self.rect.center = self.screen_coords
-    if self.is_hit:
-      self.doGravity()
-  
-  def seek_partner(self):
-    pass
+    # self.rect.center = self.screen_coords
+    self.doGravity()
+
+  def draw(self, screen):
+    for i in range(0, len(self.bodies)-1):
+      b = self.bodies[i]
+      pos = state().toScreen(b.GetPosition())
+      ang = b.GetAngle()
+      img = Media.media.dragon[params.dragon.order[i]]
+
+      rect = pygame.Rect((0,0), img.get_size())
+      rect.center = pos
+      screen.blit(img, rect)
+      pygame.draw.rect(screen, (255,0,255), rect, 1)
+
+
+      ja = params.dragon.joint_attachments[params.dragon.order[i]]
+      if(ja[0] is not None):
+        a = vec(rect.topleft)
+        a += vec(ja[0])
+        a = (int(a.x), int(a.y))
+        pygame.draw.circle(screen, (255,0,0), a, 5)
+      if(ja[1] is not None):
+        b = vec(rect.topleft)
+        b += vec(ja[1])
+        b = (int(b.x), int(b.y))
+        pygame.draw.circle(screen, (255,255,0), b, 5)
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -29,11 +29,8 @@ class Game:
 
     GameState.current = PlayState()
 
-
     Game.media = Media()
     Media.media = Game.media
-    Game.media.dragon = load_img('dragon.png')
-
 
   def run_loop(self):
 
@@ -49,9 +46,12 @@ class Game:
     def draw():
       GameState.current.draw(self.screen)
       home.draw(self.screen)
+      #HACK
+      for d in units.Dragon.all:
+        d.draw(self.screen)
     
     def spawn_dragon():
-      units.Dragon(Game.media.dragon)
+      units.Dragon()
     
     spawn_dragon()
     # pygame.time.set_timer(USEREVENT+1, 2000)
@@ -72,11 +72,9 @@ class Game:
           if event.key == K_SPACE:
             home.ent.shoot(vec(1,1))
       
-
       home.event(key)
       update()
       draw()
-
 
       pygame.display.flip()
 

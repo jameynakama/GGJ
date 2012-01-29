@@ -70,13 +70,22 @@ class Media():
   def __init__(self):
     #Load all media needed(images, animations, sounds, etc)
     self.test = load_img('test.png') 
-    self.dragon = None
+    dragon_scale = 0.25
+    self.dragon = {
+      'head': load_img('dragon/head.png', scale=dragon_scale) ,
+      'base': load_img('dragon/base.png', scale=dragon_scale) ,
+      'mid': load_img('dragon/mid.png', scale=dragon_scale) ,
+      'tail1': load_img('dragon/tail-1.png', scale=dragon_scale) ,
+      'tail2': load_img('dragon/tail-2.png', scale=dragon_scale) ,
+      'tail3': load_img('dragon/tail-3.png', scale=dragon_scale) ,
+      'torso': load_img('dragon/torso.png', scale=dragon_scale) 
+    }
     self.cannon = load_img('minicannon.png')
   
 '''
 Returns the image surface resource only
 '''
-def load_img(name, colorkey = None):
+def load_img(name, colorkey = None, scale = 1.0):
   fullname = os.path.join('media', name)
   image = pygame.image.load(fullname) 
     # To speed things up, convert the images to SDL's internal format
@@ -85,6 +94,8 @@ def load_img(name, colorkey = None):
     if colorkey == -1:
       colorkey = image.get_at((0,0))
     image.set_colorkey(colorkey, pygame.RLEACCEL)
+  if scale!=1.0:
+    image = pygame.transform.scale(image, (int(image.get_width()*scale), int(image.get_height()*scale)))
   return image
 
 

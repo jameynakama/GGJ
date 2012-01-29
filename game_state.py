@@ -1,5 +1,6 @@
 import pygame, Box2D
 import math
+import params
 from common import *
 
 class GameState(object):
@@ -8,7 +9,7 @@ class GameState(object):
 
   def __init__(self):
     self.scroll = vec(0,0)
-    self.zoom = 20
+    self.zoom = params.game.px_scale
 
   def update(self):
     pass
@@ -41,6 +42,6 @@ class PlayState(GameState):
 
   def draw(self, screen):
     # self.clods.draw(screen)
-    self.dragons.draw(screen)
+    # self.dragons.draw(screen)
     self.cannon_group.draw(screen)
 
