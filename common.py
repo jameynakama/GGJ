@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import os, math
 import pygame, Box2D
 from Box2D import *
@@ -6,13 +5,14 @@ import params
 import random
 import physics
 from physics import world
+
 vec = b2Vec2
 FPS = 60
+
 def toScreen(v):
   import game_state
   return game_state.GameState.current.toScreen(v)
 
-vec = b2Vec2
 
 def rot_point(point, origin, angle):
   sin_t = math.sin(math.radians(angle))

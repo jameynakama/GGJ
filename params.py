@@ -1,4 +1,6 @@
-
+from Box2D import b2Vec2
+vec = b2Vec2
+print vec
 
 class home:
   initial_mass = 100

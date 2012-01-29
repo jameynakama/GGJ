@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import os, sys, pygame
 from Box2D import *
 from pygame.locals import *
