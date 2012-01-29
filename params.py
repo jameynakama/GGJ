@@ -12,5 +12,5 @@ class clod:
 class dragon:
   length = 2.0
   height = 0.5
-  spawn_distance = 20
+  spawn_distance = 30
   collision_category = 0x0004
