@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import os, sys, pygame
 from Box2D import *
 from pygame.locals import *
@@ -34,6 +35,11 @@ class Game:
     Media.media = Game.media
     Game.media.dragon = load_img('dragon.png')
 
+  def play_music_sequence(self):
+    if random.randint(1, 3) == 1:
+      index = random.randint(0, len(Game.media.music_seqs) - 1)
+      if not pygame.mixer.get_busy():
+        Game.media.music_seqs[index].play()
 
   def run_loop(self):
 
@@ -68,6 +74,10 @@ class Game:
     
     spawn_dragon()
     # pygame.time.set_timer(USEREVENT+1, 2000)
+    pygame.mixer.music.load(os.path.join('media/music', 'noise.ogg'))
+    pygame.mixer.music.set_volume(0.75)
+    pygame.mixer.music.play(-1)
+    pygame.time.set_timer(USEREVENT+2, 5000)
 
     while 1:
       self.clock.tick(60)
@@ -84,6 +94,8 @@ class Game:
             return
           if event.key == K_SPACE:
             home.ent.shoot(vec(1,1))
+        if event.type == USEREVENT+2:
+          self.play_music_sequence() 
       
 
       home.event(key)
@@ -106,4 +118,3 @@ def main():
 if __name__ == '__main__':
   main()
   # cProfile.run('main()')
-

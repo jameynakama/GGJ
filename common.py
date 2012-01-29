@@ -1,9 +1,11 @@
+<<<<<<< HEAD
 import os, math
 import pygame, Box2D
 from Box2D import *
 import params
 import random
-
+import physics
+from physics import world
 vec = b2Vec2
 FPS = 60
 def toScreen(v):
@@ -77,6 +79,10 @@ class Media():
     self.home = load_img('home.png')
     self.back = load_img('clouds.png')
 
+    self.music_seqs = []
+    for i in range(1, 22):
+      self.music_seqs.append(pygame.mixer.Sound(os.path.join('media/music', 'music_seq_{num}.ogg'.format(num=i))))
+
   
 '''
 Returns the image surface resource only
@@ -93,5 +99,3 @@ def load_img(name, colorkey = None):
   return image
 
 
-import physics
-from physics import world
