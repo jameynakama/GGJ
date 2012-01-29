@@ -152,25 +152,12 @@ class Dragon(Unit):
     super(Dragon, self).__init__()
     state().dragons.add(self)
 
+    spawn_angle = math.pi * random.uniform(0, 2)
 
-    # find slope to home
-    # normalize for angle
-    target = [400.0,400.0]
-    while True:
-      x, y = random.randint(0, 800), random.randint(0, 800)
-      if (x < 100 or x > 700) and (y < 100 or y > 700):
-        self.xpos = x
-        self.ypos = y
-        break
-    spawn_pos = [self.xpos, self.ypos]
-    speed = 3 
-    if spawn_pos[0] > spawn_pos[1]:
-      self.aim = vec((spawn_pos[0]-target[0])/math.fabs(spawn_pos[0]), (spawn_pos[1]-target[1])/math.fabs(spawn_pos[0]))
-    else:
-      self.aim =vec((spawn_pos[0]-target[0])/math.fabs(spawn_pos[1]), (spawn_pos[1]-target[1])/math.fabs(spawn_pos[1]))
-    spawn_angle = math.pi / 2
+    vel = polar_vec(-1, spawn_angle)
 
-    self.body, shape = physics.dragon_body(spawn_angle, self.aim)
+    self.body, shape = physics.dragon_body(spawn_angle, vel)
+
     shape.SetUserData(self)
     self.image = image
     self.rect = self.image.get_rect()
@@ -179,7 +166,7 @@ class Dragon(Unit):
 
     print "\nDragon spawned!\nangle: {init_angle}\nvelocity: {init_velocity}".format(
           init_angle = spawn_angle,
-          init_velocity = self.aim,
+          init_velocity = vel,
           )
 
   def take_hit(self):

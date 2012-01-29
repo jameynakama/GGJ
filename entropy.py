@@ -51,7 +51,7 @@ class Game:
     def spawn_dragon():
       units.Dragon(Game.media.dragon)
     
-    pygame.time.set_timer(USEREVENT+1, 2000)
+    pygame.time.set_timer(USEREVENT+1, 1000)
 
     while 1:
       self.clock.tick(FPS)
