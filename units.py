@@ -154,7 +154,7 @@ class Dragon(Unit):
 
     spawn_angle = math.pi * random.uniform(0, 2)
 
-    vel = polar_vec(-1, spawn_angle)
+    vel = polar_vec(-4, spawn_angle)
 
     self.body, shape = physics.dragon_body(spawn_angle, vel)
 
