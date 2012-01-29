@@ -56,7 +56,7 @@ class Game:
     def draw():
       bg = Media.media.back
       bgr = bg.get_rect()
-      self.screen.blit(bg, bgr)
+      # self.screen.blit(bg, bgr)
       GameState.current.draw(self.screen)
 
 
