@@ -1,7 +1,7 @@
 
 from Box2D import *
 from debugdraw import *
-from common import polar_vec
+from common import *
 import params
 
 import contact_listener
@@ -68,11 +68,29 @@ def clod_body(radius, pos, vel, mass):
 	return body, shape
 
 def dragon_body(spawn_angle, vel):
+	N = 6
+	size = (
+		vec(params.dragon.length, params.dragon.height),
+		vec(params.dragon.length, params.dragon.height),
+		vec(params.dragon.length, params.dragon.height),
+		vec(params.dragon.length, params.dragon.height),
+		vec(params.dragon.length, params.dragon.height),
+		vec(params.dragon.length, params.dragon.height)
+	)
+	joint_pos = (
+		vec(0,0),
+		vec(0,0),
+		vec(0,0),
+		vec(0,0),
+		vec(0,0),
+		vec(0,0)
+	)
+	pos = polar_vec(params.dragon.spawn_distance, spawn_angle)
 	bodyDef = b2BodyDef()
-	bodyDef.position = polar_vec(params.dragon.spawn_distance, spawn_angle)
 	
+	jointDef = b2RevoluteJointDef()
+
 	shapeDef = b2PolygonDef()
-	shapeDef.SetAsBox(params.dragon.length, params.dragon.height)
 	shapeDef.density = 1
 	shapeDef.restitution = 0
 	shapeDef.friction = 1
@@ -81,10 +99,59 @@ def dragon_body(spawn_angle, vel):
 	filter.categoryBits = params.dragon.collision_category
 	filter.maskBits = 0xffff - params.dragon.collision_category
 
-	body = world.CreateBody(bodyDef)
-	shape = body.CreateShape(shapeDef)
-	shape.SetFilterData(filter)
-	body.SetMassFromShapes()
-	body.SetLinearVelocity(vel)
-	return body, shape
+	def make_body(i, pos):
+		sz = size[i]
+		bodyDef.position = pos
+		pos += sz
+		shapeDef.SetAsBox(sz.x, sz.y)
+		b = world.CreateBody(bodyDef)
+		s = b.CreateShape(shapeDef)
+		s.SetFilterData(filter)
+		b.SetMassFromShapes()
+		return b, s
+	
+	def make_joint(i):
+		jp = joint_pos[i]
+		jointDef.Initialize(tail[i], tail[i+1], vec(0,0))
+		j = world.CreateJoint(jointDef)
+		return j
+		
+	tail = []
+	shapes = []
+	b, s = make_body(0, pos)
+	tail.append(b)
+	shapes.append(s)
+	for i in range(0, N-2):
+		b, s = make_body(i+1, pos)
+		tail.append(b)
+		shapes.append(s)
+		make_joint(i)
+	return tail[0], shapes
+
+
+
+
+# def dragon_body(spawn_angle, vel):
+# 	bodyDef = b2BodyDef()
+# 	bodyDef.position = polar_vec(params.dragon.spawn_distance, spawn_angle)
+	
+# 	shapeDef = b2PolygonDef()
+# 	shapeDef.SetAsBox(params.dragon.length, params.dragon.height)
+# 	shapeDef.density = 1
+# 	shapeDef.restitution = 0
+# 	shapeDef.friction = 1
+
+# 	filter = b2FilterData()
+# 	filter.categoryBits = params.dragon.collision_category
+# 	filter.maskBits = 0xffff - params.dragon.collision_category
+
+# 	body = world.CreateBody(bodyDef)
+# 	shape = body.CreateShape(shapeDef)
+# 	shape.SetFilterData(filter)
+# 	body.SetMassFromShapes()
+# 	body.SetLinearVelocity(vel)
+# 	return body, shape
+
+
+
 

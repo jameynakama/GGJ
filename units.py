@@ -152,7 +152,6 @@ class Dragon(Unit):
     super(Dragon, self).__init__()
     state().dragons.add(self)
 
-
     # find slope to home
     # normalize for angle
     target = [400.0,400.0]
@@ -171,7 +170,7 @@ class Dragon(Unit):
     spawn_angle = math.pi / 2
 
     self.body, shape = physics.dragon_body(spawn_angle, self.aim)
-    shape.SetUserData(self)
+    for s in shape: s.SetUserData(self)
     self.image = image
     self.rect = self.image.get_rect()
     self.is_hit = False
