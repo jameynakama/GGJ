@@ -7,7 +7,7 @@ class game:
   px_scale = 20
 
 class home:
-  initial_mass = 100
+  initial_mass = 200
   min_mass = 10
   gravitational_constant = 1.0 # raise it to strengthen gravity
   collision_category = 0x0001

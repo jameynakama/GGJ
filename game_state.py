@@ -35,6 +35,7 @@ class PlayState(GameState):
 
     self.cannon_group = pygame.sprite.RenderClear()
     self.clods = pygame.sprite.RenderClear()
+    self.snakes = pygame.sprite.RenderClear()
     self.dragons = pygame.sprite.RenderClear()
 
   def update(self):

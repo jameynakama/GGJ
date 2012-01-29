@@ -34,6 +34,8 @@ class Game:
     Game.media = Media()
     Media.media = Game.media
 
+    units.Home.image = Media.media.home
+
   def play_music_sequence(self):
     if random.randint(1, 3) == 1:
       index = random.randint(0, len(Game.media.music_seqs) - 1)
@@ -72,7 +74,7 @@ class Game:
         d.draw(self.screen)
     
     def spawn_dragon():
-      units.Dragon()
+      units.Snake()
     
     spawn_dragon()
     # pygame.time.set_timer(USEREVENT+1, 2000)
@@ -94,8 +96,6 @@ class Game:
         if event.type == KEYDOWN:
           if event.key == K_ESCAPE:
             return
-          if event.key == K_SPACE:
-            home.ent.shoot(vec(1,1))
         if event.type == USEREVENT+2:
           self.play_music_sequence() 
       

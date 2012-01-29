@@ -49,7 +49,8 @@ class Home(Unit):
     @property
     def pos(self):
       rad = math.radians(self.home.angle)
-      return vec(math.cos(rad)*self.home.radius, math.sin(rad)*self.home.radius)
+      r = self.home.radius + 1.5
+      return vec(math.cos(rad)*r, math.sin(rad)*r)
 
     def update(self):
       self.shot_cool -= 1
@@ -92,17 +93,17 @@ class Home(Unit):
 
       #super(Home.Ent, self).draw(screen)
 
-    def shoot(self, vel):
-      if(Home.instance.mass > params.home.min_mass):
-        Clod(self.pos, vel, 2.5)
-      else:
-        print "Home mass too small to shoot!  hah!"
+    # def shoot(self, vel):
+    #   if(Home.instance.mass > params.home.min_mass):
+    #     Clod(self.pos, vel, 2.5)
+    #   else:
+    #     print "Home mass too small to shoot!  hah!"
 
     def fire(self, angle):
       speed = 10.0
       vel = vec(math.cos(math.radians(angle)) * speed, math.sin(math.radians(angle)) * speed)
-      print 'firing object', vel.x, vel.y
-      Clod(self.pos, vel, 0.5 )
+      if(Home.instance.mass > params.home.min_mass):
+        Clod(self.pos, vel, 0.5 )
 
   def __init__(self):
     super(Home, self).__init__()
@@ -114,7 +115,6 @@ class Home(Unit):
     self.mass = params.home.initial_mass
     self.maxmass = 100.0
 
-
     screen = pygame.display.get_surface()
     self.image = Media.media.home
     self.rect = self.image.get_rect()
@@ -125,6 +125,7 @@ class Home(Unit):
     # shape.SetUserData(self)
 
   instance = None
+  image = None
 
   @property
   def radius(self):
@@ -140,10 +141,9 @@ class Home(Unit):
     self.body = physics.home_body(self.radius)
 
   def draw(self, screen):
-
-
     scale = int(170 + 80*(self.mass / self.maxmass))
-    self.image = pygame.transform.smoothscale(self.image, [scale, scale])
+    scale = 2 * int(self.radius * params.game.px_scale)
+    self.image = pygame.transform.smoothscale(Home.image, [scale, scale])
     self.rect = self.image.get_rect()
     self.rect.center = [400,400]
     screen.blit(self.image, self.rect)
@@ -210,6 +210,42 @@ class Clod(Unit):
       del self
 
 
+class Snake(Unit):
+
+  all = []
+
+  def __init__(self):
+    super(Snake, self).__init__()
+    state().snakes.add(self)
+    Snake.all.append(self)
+
+    spawn_angle = math.pi * random.uniform(0, 2)
+    speed = -random.uniform(1, 2)
+
+    vel = polar_vec(speed, spawn_angle / random.uniform(-0.5, 0.5))
+    # pos = polar_vec(params.dragon.spawn_distance, spawn_angle)
+    pos = vec(10, -10)
+    self.body, self.shape = physics.snake_body(pos, vel)
+    self.shape.SetUserData(self)
+    self.is_hit = False
+
+
+  def take_hit(self):
+    self.is_hit = True
+    self.body.SetLinearVelocity(self.body.GetLinearVelocity() * 0.2)
+
+  @property
+  def pos(self):
+    return self.body.GetPosition()
+  
+  def update(self):
+    # self.rect.center = self.screen_coords
+    self.doGravity()
+
+  def draw(self, screen):
+    pass
+
+
 class Dragon(Unit):
 
   all = []
@@ -231,7 +267,6 @@ class Dragon(Unit):
     for s in self.shapes: s.SetUserData(self)
 
     self.is_hit = False
-    state().dragons.add(self)
 
     print "\nDragon spawned!\nangle: {init_angle}\nvelocity: {init_velocity}".format(
           init_angle = spawn_angle,
@@ -245,7 +280,7 @@ class Dragon(Unit):
   @property
   def pos(self):
     return self.body.GetPosition()
-  
+
   def update(self):
     # self.rect.center = self.screen_coords
     self.doGravity()
