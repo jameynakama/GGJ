@@ -1,6 +1,5 @@
 
-from Box2D import b2Vec2
-vec = b2Vec2
+from common import *
 
 class game:
   debug_draw = True
@@ -52,10 +51,6 @@ class dragon:
     jo.append( v / game.px_scale )
   joint_offsets = jo
   print jo
-
-
-
-
 
 
 

@@ -2,6 +2,8 @@ import pygame, Box2D
 import math
 import params
 from common import *
+from Box2D import b2Vec2
+vec = b2Vec2
 
 class GameState(object):
 

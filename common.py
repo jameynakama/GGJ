@@ -1,18 +1,18 @@
-
 import os, math
 import pygame, Box2D
 from Box2D import *
+
+vec = b2Vec2
+
 import params
 import random
-import physics
-from physics import world
-vec = b2Vec2
+
 FPS = 60
+
 def toScreen(v):
   import game_state
   return game_state.GameState.current.toScreen(v)
 
-vec = b2Vec2
 
 def rot_point(point, origin, angle):
   sin_t = math.sin(math.radians(angle))
@@ -84,7 +84,6 @@ class Media():
       'torso': load_img('dragon/torso.png', scale=dragon_scale) 
     }
 
-    self.dragon = None
     self.cannon = [load_img('cannon_back.png'), load_img('cannon.png'), load_img('cannon_front.png')]
     self.vertcannon = load_img('upminicannon.png')
     self.home = load_img('home.png')
@@ -111,4 +110,5 @@ def load_img(name, colorkey = None, scale = 1.0):
     image = pygame.transform.scale(image, (int(image.get_width()*scale), int(image.get_height()*scale)))
   return image
 
-
+# KEEP DOWN HERE
+from physics import world

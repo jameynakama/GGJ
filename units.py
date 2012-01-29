@@ -1,7 +1,7 @@
 import pygame, Box2D
 import math
 from common import *
-import entropy
+import physics
 from game_state import GameState, state
 
 class Unit(pygame.sprite.Sprite, object):
@@ -101,7 +101,7 @@ class Home(Unit):
     def fire(self, angle):
       speed = 10.0
       vel = vec(math.cos(math.radians(angle)) * speed, math.sin(math.radians(angle)) * speed)
-      print 'firing object', vec.x, vec.y
+      print 'firing object', vel.x, vel.y
       Clod(self.pos, vel, 0.5 )
 
   def __init__(self):
