@@ -1,5 +1,5 @@
 import pygame, Box2D
-import math, random
+import math
 from common import *
 from game_state import GameState, state
 
@@ -54,6 +54,7 @@ class Home(Unit):
     def fire(self, angle):
       speed = 10.0
       vel = vec(math.cos(math.radians(angle)) * speed, math.sin(math.radians(angle)) * speed)
+      print 'firing object', vec.x, vec.y
       Clod(self.pos, vel, 0.5 )
 
   def __init__(self):
@@ -96,20 +97,25 @@ class Home(Unit):
       self.ent.shot_cool -= 1
       if self.ent.shot_cool < 0:
         fireang = (self.ent.shot_angle *self.angle_mult) + self.angle
+        print fireang
         self.ent.fire(fireang)
         self.ent.shot_cool = 30
     if key[ord('s')]:
       if self.ent.shot_angle < 90.0:
-        self.ent.shot_angle += 1.5
+        self.ent.shot_angle += 0.5
+      print self.ent.shot_angle
     elif key[ord('w')]:
       if self.ent.shot_angle > 0.5:
-        self.ent.shot_angle -= 1.5
+        self.ent.shot_angle -= 0.5
+      print self.ent.shot_angle
 
     if key[ord('a')]:
+      print 'a event called', self.angle
       self.angle_mult = -1.0
       self.angle = self.angle - self.angle_delta 
 
     elif key[ord('d')]:
+      print 'd event called', self.angle
       self.angle_mult = 1.0
       self.angle = self.angle + self.angle_delta
 
@@ -125,10 +131,6 @@ class Clod(Unit):
 
   def __del__(self):
     Home.instance.mass += self.mass
-
-  @property
-  def category(self):
-    return "clod"
 
   @property
   def pos(self):
@@ -147,36 +149,22 @@ class Clod(Unit):
 
 
 class Dragon(Unit):
-  def __init__(self, spawn_angle=None, vel=None):
+  def __init__(self, r, t):
     super(Dragon, self).__init__()
-    state().dragons.add(self)
-    if not spawn_angle:
-      spawn_angle = math.pi / random.randint(1, 4)
-    if not vel:
-      vel = vec(random.randint(1, 4), random.randint(1,4)) 
-    self.body, shape = physics.dragon_body(spawn_angle, vel)
+    self.body, shape = physics.dragon_body(r, t)
     shape.SetUserData(self)
     self.image, self.rect = load_img('dragon.png')
     self.is_hit = False
     state().dragons.add(self)
-
-    # print "\nDragon spawned!\nangle: {init_angle}\nvelocity: {init_velocity}".format(
-    #       init_angle = spawn_angle,
-    #       init_velocity = vel,
-    #       )
-
-
-  def take_hit(self):
-    self.is_hit = True
-    self.body.SetLinearVelocity(self.body.GetLinearVelocity() * 0.2)
-
+  
   @property
   def pos(self):
     return self.body.GetPosition()
   
   def update(self):
     self.rect.center = self.screen_coords
-    self.doGravity()
+    if self.is_hit:
+      self.doGravity()
   
-  # def seek_partner(self):
-  #   pass
+  def seek_partner(self):
+    pass

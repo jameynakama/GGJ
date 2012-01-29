@@ -27,6 +27,10 @@ class Game:
 
     GameState.current = PlayState()
 
+    units.Dragon(15, math.pi/2)
+    self.test = units.Dragon(15, -math.pi/2).image
+
+
 
   def run_loop(self):
 
@@ -43,9 +47,10 @@ class Game:
       GameState.current.draw(self.screen)
       home.draw(self.screen)
 
-
+    angle = 0.0
+    where = [200, 200]
     while 1:
-      self.clock.tick(FPS)
+      self.clock.tick(60)
       self.screen.fill(self.back_color)
 
       pygame.event.pump()
@@ -57,13 +62,18 @@ class Game:
         if event.type == KEYDOWN:
           if event.key == K_ESCAPE:
             return
-    
+          if event.key == K_SPACE:
+            home.ent.shoot(vec(1,1))
+      
+      angle += 1.0
+
+      self.test = rot_center(self.test, angle)
+      self.test_rect = self.test.get_rect()
+
+
       home.event(key)
-      if self.frames % 60 == 0:
-        units.Dragon()
       update()
       draw()
-      self.frames += 1
 
       pygame.display.flip()
 

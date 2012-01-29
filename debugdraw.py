@@ -1,6 +1,7 @@
 import Box2D as box2d
 import pygame
 from Box2D import b2Vec2
+import sys
 from game_state import GameState
 
 class DebugDraw(box2d.b2DebugDraw):
@@ -105,10 +106,11 @@ class DebugDraw(box2d.b2DebugDraw):
         vertices = [self.toScreen(v) for v in in_vertices]
         pygame.draw.polygon(self.surface, color, vertices, 1)
         
-    def DrawSolidPolygon(self, in_vertices, color):
+    def DrawSolidPolygon(self, in_vertices, bluff, color):
         """
         Draw a filled polygon given the world vertices in_vertices (tuples) with the specified color.
         """
+ 
         color = self.convertColor(color)
         vertices = [self.toScreen(b2Vec2(v)) for v in in_vertices]
         # print vertices
