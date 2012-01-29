@@ -71,7 +71,7 @@ class Home(Unit):
       tangle.move_ip(tp[0]-tangle.center[0], tp[1]-tangle.center[1])
       print self.shot_angle, self.home.angle
       #self.rect = rot_point_img_rect(screen, Home.Ent.image, self.rect.topleft, (400, 400), 0, -self.home.angle+(self.shot_angle*-self.home.angle_mult)  )
-      #rot_point_img(screen, Home.Ent.image, self.rect.topleft, (400, 400), 0, -self.home.angle+(self.shot_angle*-self.home.angle_mult)  )
+      rot_point_img(screen, Home.Ent.image, self.rect.topleft, (400, 400), 0, -self.home.angle+(self.shot_angle*-self.home.angle_mult)  )
 
       # super(Home.Ent, self).draw(screen)
 

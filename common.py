@@ -72,6 +72,10 @@ class Media():
     self.test = load_img('test.png') 
     self.dragon = None
     self.cannon = load_img('minicannon.png')
+    
+    self.music_seqs = []
+    for i in range(1, 22):
+      self.music_seqs.append(pygame.mixer.Sound(os.path.join('media/music', 'music_seq_{num}.ogg'.format(num=i))))
   
 '''
 Returns the image surface resource only
