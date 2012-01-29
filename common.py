@@ -24,8 +24,8 @@ def rot_point_img(screen, img, point, origin, point_angle, twist_angle):
   new_center = rot_point(point, origin, point_angle)
   rotated = img = pygame.transform.rotate(img, twist_angle)
   
-  pygame.draw.circle(screen, [255, 0, 0], (int(point[0]), int(point[1])), 2, 0)
-  pygame.draw.circle(screen, [0,255, 0], (int(origin[0]),int(origin[1])), 2, 0)
+  #pygame.draw.circle(screen, [255, 0, 0], (int(point[0]), int(point[1])), 2, 0)
+  #pygame.draw.circle(screen, [0,255, 0], (int(origin[0]),int(origin[1])), 2, 0)
 
   rot_rect = rotated.get_rect()
   rot_rect.center = new_center
@@ -41,8 +41,8 @@ def rot_point_img_rect(screen, img, origin, point, point_angle, twist_angle):
   rot_rect = rotated.get_rect()
   rot_rect.center = new_p
   #screen.blit(rotated, rot_rect)
-  pygame.draw.circle(screen, [128, 255, 128], (int(point[0]), int(point[1])), 2, 0)
-  pygame.draw.circle(screen, [0,255, 0], (int(origin[0]),int(origin[1])), 2, 0)
+  #pygame.draw.circle(screen, [128, 255, 128], (int(point[0]), int(point[1])), 2, 0)
+  #pygame.draw.circle(screen, [0,255, 0], (int(origin[0]),int(origin[1])), 2, 0)
   return rot_rect
   #return rotated.get_rect()
 
@@ -75,6 +75,7 @@ class Media():
     self.vertcannon = load_img('upminicannon.png')
     self.dragon = [load_img('dragon_head.png'), load_img('dragon_torso.png'), load_img('dragon_mid.png'), load_img('dragon_base.png'), load_img('dragon_tail1.png'), load_img('dragon_tail2.png'), load_img('dragon_tail3.png')]
     self.home = load_img('home.png')
+    self.back = load_img('clouds.png')
 
   
 '''

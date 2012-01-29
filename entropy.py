@@ -47,7 +47,20 @@ class Game:
       physics.worldStep()
 
     def draw():
+      bg = Media.media.back
+      bgr = bg.get_rect()
+      self.screen.blit(bg, bgr)
       GameState.current.draw(self.screen)
+
+
+      c_back = Media.media.cannon[0] 
+      c_back = rot_center(c_back, -home.angle) 
+      cb = c_back.get_rect()
+      cb.center =home.ent.screen_coords
+      self.screen.blit(c_back, cb)
+
+
+ 
       home.draw(self.screen)
     
     def spawn_dragon():
@@ -76,11 +89,6 @@ class Game:
       home.event(key)
       update()
 
-      c_back = Media.media.cannon[0] 
-      c_back = rot_center(c_back, -home.angle) 
-      cb = c_back.get_rect()
-      cb.center =home.ent.screen_coords
-      self.screen.blit(c_back, cb)
 
 
       draw()

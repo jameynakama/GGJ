@@ -78,15 +78,14 @@ class Home(Unit):
       #pygame.draw.circle(screen, [255, 0, 255], self.screen_coords, 20, 0)
       self.rect = self.image.get_rect()
       self.rect.move_ip(self.screen_coords)
-      pygame.draw.rect(screen, (255, 0, 0), self.rect, 1)
 
       mutate_pt = self.angle_point(60)
       self.image = pygame.transform.rotozoom(Home.Ent.image, -self.home.angle+(self.shot_angle*-self.home.angle_mult), 1.0)
       ang = -self.home.angle+(self.shot_angle*-self.home.angle_mult)
       self.rect = rot_point_img_rect(screen, Home.Ent.image, self.screen_coords, (400, 400), 0 , ang  )
 
-      print self.screen_coords, mutate_pt, self.angle_to(mutate_pt, self.screen_coords)
-      pygame.draw.circle(screen, (0,64,255), mutate_pt,  4, 0)
+      #print self.screen_coords, mutate_pt, self.angle_to(mutate_pt, self.screen_coords)
+      #pygame.draw.circle(screen, (0,64,255), mutate_pt,  4, 0)
 
       self.c_front = Media.media.cannon[2]
       self.c_front = rot_center(self.c_front, -self.home.angle)
@@ -117,10 +116,14 @@ class Home(Unit):
     self.angle_mult = 1.0
     self.angle_delta = 5.0 
     self.mass = params.home.initial_mass
+    self.maxmass = 100.0
 
 
     screen = pygame.display.get_surface()
-    self.rect = None
+    self.image = Media.media.home
+    self.rect = self.image.get_rect()
+    self.bg = Media.media.back
+    self.bgr = self.bg.get_rect() 
     self.pos = vec(0,0)
     self.body = physics.home_body(self.radius)
     # shape.SetUserData(self)
@@ -141,8 +144,16 @@ class Home(Unit):
     self.body = physics.home_body(self.radius)
 
   def draw(self, screen):
+
+
+    scale = int(170 + 80*(self.mass / self.maxmass))
+    self.image = pygame.transform.smoothscale(self.image, [scale, scale])
+    self.rect = self.image.get_rect()
+    self.rect.center = [400,400]
+    screen.blit(self.image, self.rect)
     self.ent.draw(screen)
-    pygame.draw.circle(screen, [255,255,0], self.screen_coords, int(self.radius), 0)
+
+    #pygame.draw.circle(screen, [255,255,0], self.screen_coords, int(self.radius), 0)
 
   def event(self, key):
     if key[pygame.K_SPACE]:
