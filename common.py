@@ -17,10 +17,14 @@ def polar_vec(r, t):
   return vec(r*math.cos(t), r*math.sin(t))
 
 class Media():
+
+  media = None
+
   def __init__(self):
     #Load all media needed(images, animations, sounds, etc)
     self.test = load_img('test.png') 
     self.dragon = None
+    self.cannon = load_img('cannon.png')
   
 '''
 Returns the image surface resource only

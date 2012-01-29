@@ -30,6 +30,7 @@ class Game:
     GameState.current = PlayState()
 
     Game.media = Media()
+    Media.media = Game.media
     Game.media.dragon = load_img('dragon.png')
 
 

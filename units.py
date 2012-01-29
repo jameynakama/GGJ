@@ -14,6 +14,9 @@ class Unit(pygame.sprite.Sprite, object):
     len = grav.Normalize()
     grav *= params.home.gravitational_constant * Home.instance.mass / (len*len)
     self.body.ApplyForce(grav, self.pos)
+  
+  def draw(self, screen):
+    super(Unit, self).draw(screen)
 
   @property
   def screen_coords(self):
@@ -22,6 +25,9 @@ class Unit(pygame.sprite.Sprite, object):
 class Home(Unit):
 
   class Ent(Unit):
+
+    image = None
+
     def __init__(self, home):
       super(Home.Ent, self).__init__()
 
@@ -30,7 +36,11 @@ class Home(Unit):
       self.shot_cool = 20
       #shot_angle |[-90, 90]|
       self.shot_angle = 45.0
+      self.start_angle = -90.0
       self.cw = True
+      Home.Ent.image = self.image = Media.media.cannon
+      self.rect = self.image.get_rect()
+      state().cannon_group.add(self)
       
     #Returns [x,y] coordinates for the ent moving around the planet
     #Param: angle -- angle of the ent relative to the Home
@@ -45,6 +55,13 @@ class Home(Unit):
 
     def draw(self, screen):
       pygame.draw.circle(screen, [255, 0, 255], self.screen_coords, 20, 0)
+
+      self.rect = self.image.get_rect()
+      self.rect.move_ip(self.screen_coords)
+      pygame.draw.rect(screen, (255, 0, 0), self.rect, 1)
+      self.image = pygame.transform.rotozoom(Home.Ent.image, self.start_angle + self.shot_angle, 0.5)
+
+      # super(Home.Ent, self).draw(screen)
 
     def shoot(self, vel):
       if(Home.instance.mass > params.home.min_mass):
@@ -152,25 +169,14 @@ class Dragon(Unit):
     super(Dragon, self).__init__()
     state().dragons.add(self)
 
-    # find slope to home
-    # normalize for angle
-    target = [400.0,400.0]
-    while True:
-      x, y = random.randint(0, 800), random.randint(0, 800)
-      if (x < 100 or x > 700) and (y < 100 or y > 700):
-        self.xpos = x
-        self.ypos = y
-        break
-    spawn_pos = [self.xpos, self.ypos]
-    speed = 3 
-    if spawn_pos[0] > spawn_pos[1]:
-      self.aim = vec((spawn_pos[0]-target[0])/math.fabs(spawn_pos[0]), (spawn_pos[1]-target[1])/math.fabs(spawn_pos[0]))
-    else:
-      self.aim =vec((spawn_pos[0]-target[0])/math.fabs(spawn_pos[1]), (spawn_pos[1]-target[1])/math.fabs(spawn_pos[1]))
-    spawn_angle = math.pi / 2
+    spawn_angle = math.pi * random.uniform(0, 2)
+    speed = -random.uniform(1, 2)
 
-    self.body, shape = physics.dragon_body(spawn_angle, self.aim)
+    vel = polar_vec(speed, spawn_angle / random.uniform(-0.5, 0.5))
+
+    self.body, shape = physics.dragon_body(spawn_angle, vel)
     for s in shape: s.SetUserData(self)
+
     self.image = image
     self.rect = self.image.get_rect()
     self.is_hit = False
@@ -178,7 +184,7 @@ class Dragon(Unit):
 
     print "\nDragon spawned!\nangle: {init_angle}\nvelocity: {init_velocity}".format(
           init_angle = spawn_angle,
-          init_velocity = self.aim,
+          init_velocity = vel,
           )
 
   def take_hit(self):
