@@ -1,9 +1,11 @@
+
 import os, math
 import pygame, Box2D
 from Box2D import *
 import params
 import random
-
+import physics
+from physics import world
 vec = b2Vec2
 FPS = 60
 def toScreen(v):
@@ -21,15 +23,16 @@ def rot_point_img(screen, img, point, origin, point_angle, twist_angle):
   former_center = img.get_rect().center 
   pygame.draw.circle(screen, [128, 255, 255], origin, 2, 0)
 
-  new_p = rot_point(point, origin, point_angle)
-  rotated = pygame.transform.rotate(img, twist_angle)
+  new_center = rot_point(point, origin, point_angle)
+  rotated = img = pygame.transform.rotate(img, twist_angle)
   
-  pygame.draw.circle(screen, [128, 255, 128], (int(point[0]), int(point[1])), 2, 0)
-  pygame.draw.circle(screen, [0,255, 0], (int(origin[0]),int(origin[1])), 2, 0)
-  
+  #pygame.draw.circle(screen, [255, 0, 0], (int(point[0]), int(point[1])), 2, 0)
+  #pygame.draw.circle(screen, [0,255, 0], (int(origin[0]),int(origin[1])), 2, 0)
+
   rot_rect = rotated.get_rect()
-  rot_rect.center = new_p
-  screen.blit(rotated, rot_rect)
+  rot_rect.center = new_center
+  #screen.blit(rotated, rot_rect)
+  return rot_rect
 
 def rot_point_img_rect(screen, img, origin, point, point_angle, twist_angle):
   former_center = img.get_rect().center 
@@ -38,14 +41,13 @@ def rot_point_img_rect(screen, img, origin, point, point_angle, twist_angle):
   rotated = pygame.transform.rotate(img, twist_angle)
   
   rot_rect = rotated.get_rect()
-  #rotated.center = new_p
   rot_rect.center = new_p
-  screen.blit(rotated, rot_rect)
-  pygame.draw.circle(screen, [128, 255, 128], (int(point[0]), int(point[1])), 2, 0)
-  pygame.draw.circle(screen, [0,255, 0], (int(origin[0]),int(origin[1])), 2, 0)
-  #return rot_rect
+  #screen.blit(rotated, rot_rect)
+  #pygame.draw.circle(screen, [128, 255, 128], (int(point[0]), int(point[1])), 2, 0)
+  #pygame.draw.circle(screen, [0,255, 0], (int(origin[0]),int(origin[1])), 2, 0)
+  return rot_rect
   #return rotated.get_rect()
-   
+
 def polar_vec(r, t):
   return vec(r*math.cos(t), r*math.sin(t))
 
@@ -70,6 +72,7 @@ class Media():
   def __init__(self):
     #Load all media needed(images, animations, sounds, etc)
     self.test = load_img('test.png') 
+
     dragon_scale = 0.25
     self.dragon = {
       'head': load_img('dragon/head.png', scale=dragon_scale) ,
@@ -80,7 +83,17 @@ class Media():
       'tail3': load_img('dragon/tail-3.png', scale=dragon_scale) ,
       'torso': load_img('dragon/torso.png', scale=dragon_scale) 
     }
-    self.cannon = load_img('minicannon.png')
+
+    self.dragon = None
+    self.cannon = [load_img('cannon_back.png'), load_img('cannon.png'), load_img('cannon_front.png')]
+    self.vertcannon = load_img('upminicannon.png')
+    self.home = load_img('home.png')
+    self.back = load_img('clouds.png')
+
+    self.music_seqs = []
+    for i in range(1, 22):
+      self.music_seqs.append(pygame.mixer.Sound(os.path.join('media/music', 'music_seq_{num}.ogg'.format(num=i))))
+
   
 '''
 Returns the image surface resource only
@@ -99,5 +112,3 @@ def load_img(name, colorkey = None, scale = 1.0):
   return image
 
 
-import physics
-from physics import world

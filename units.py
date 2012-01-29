@@ -33,10 +33,14 @@ class Home(Unit):
       self.shot_cool = 20
       #shot_angle |[-90, 90]|
       self.shot_angle = 0.0
-      self.start_angle = -90.0
+      self.start_angle = 0.0
       self.cw = True
-      Home.Ent.image = self.image = Media.media.cannon
+      
+
+      Home.Ent.image = self.image = Media.media.cannon[1]
+      self.c_front = Media.media.cannon[2]
       self.rect = self.image.get_rect()
+
       state().cannon_group.add(self)
       
     #Returns [x,y] coordinates for the ent moving around the planet
@@ -50,25 +54,43 @@ class Home(Unit):
     def update(self):
       self.shot_cool -= 1
     
+    def angle_point(self, radius):
+       return (400 + int(math.cos(math.radians(self.home.angle))*radius),400 + int(math.sin(math.radians(self.home.angle))*radius))
+
+    def angle_to(self, origin, point):  
+      return math.degrees(math.atan2(origin[0]-point[0], origin[1]-point[1]))
+        
     @property 
     def cannon_origin(self):
       return (math.cos(math.radians(self.home.angle)), math.sin(math.radians(self.home.angle)))
 
     def draw(self, screen):
-      pygame.draw.circle(screen, [255, 0, 255], self.screen_coords, 20, 0)
+      self.c_back = Media.media.cannon[0] 
+      self.c_back = rot_center(self.c_back, -self.home.angle) 
+      self.cb = self.c_back.get_rect()
+      self.cb.center = self.screen_coords
+      #screen.blit(self.c_back, self.cb)
 
+
+      #pygame.draw.circle(screen, [255, 0, 255], self.screen_coords, 20, 0)
       self.rect = self.image.get_rect()
       self.rect.move_ip(self.screen_coords)
-      pygame.draw.rect(screen, (255, 0, 0), self.rect, 1)
 
-      self.image = pygame.transform.rotozoom(Home.Ent.image, -self.home.angle+(self.shot_angle*-self.home.angle_mult), 0.5)
-      tangle = self.image.get_rect()
-      tp = tangle.topleft
-      tangle.move_ip(tp[0]-tangle.center[0], tp[1]-tangle.center[1])
-      # self.rect = rot_point_img_rect(screen, Home.Ent.image, self.rect.topleft, (400, 400), 0, -self.home.angle+(self.shot_angle*-self.home.angle_mult)  )
-      rot_point_img(screen, Home.Ent.image, self.rect.topleft, (400, 400), 0, -self.home.angle+(self.shot_angle*-self.home.angle_mult)  )
+      mutate_pt = self.angle_point(60)
+      self.image = pygame.transform.rotozoom(Home.Ent.image, -self.home.angle+(self.shot_angle*-self.home.angle_mult), 1.0)
+      ang = -self.home.angle+(self.shot_angle*-self.home.angle_mult)
+      self.rect = rot_point_img_rect(screen, Home.Ent.image, self.screen_coords, (400, 400), 0 , ang  )
 
-      # super(Home.Ent, self).draw(screen)
+      #print self.screen_coords, mutate_pt, self.angle_to(mutate_pt, self.screen_coords)
+      #pygame.draw.circle(screen, (0,64,255), mutate_pt,  4, 0)
+
+      self.c_front = Media.media.cannon[2]
+      self.c_front = rot_center(self.c_front, -self.home.angle)
+      self.cf = self.c_front.get_rect()
+      self.cf.center = self.screen_coords
+      screen.blit(self.c_front, self.cf)
+
+      #super(Home.Ent, self).draw(screen)
 
     def shoot(self, vel):
       if(Home.instance.mass > params.home.min_mass):
@@ -90,10 +112,14 @@ class Home(Unit):
     self.angle_mult = 1.0
     self.angle_delta = 5.0 
     self.mass = params.home.initial_mass
+    self.maxmass = 100.0
 
 
     screen = pygame.display.get_surface()
-    self.rect = None
+    self.image = Media.media.home
+    self.rect = self.image.get_rect()
+    self.bg = Media.media.back
+    self.bgr = self.bg.get_rect() 
     self.pos = vec(0,0)
     self.body = physics.home_body(self.radius)
     # shape.SetUserData(self)
@@ -114,8 +140,16 @@ class Home(Unit):
     self.body = physics.home_body(self.radius)
 
   def draw(self, screen):
+
+
+    scale = int(170 + 80*(self.mass / self.maxmass))
+    self.image = pygame.transform.smoothscale(self.image, [scale, scale])
+    self.rect = self.image.get_rect()
+    self.rect.center = [400,400]
+    screen.blit(self.image, self.rect)
     self.ent.draw(screen)
-    pygame.draw.circle(screen, [255,255,0], self.screen_coords, int(self.radius), 0)
+
+    #pygame.draw.circle(screen, [255,255,0], self.screen_coords, int(self.radius), 0)
 
   def event(self, key):
     if key[pygame.K_SPACE]:
@@ -126,11 +160,11 @@ class Home(Unit):
         self.ent.shot_cool = 30
     if key[ord('s')]:
       if self.ent.shot_angle < 90.0:
-        self.ent.shot_angle += 0.5
+        self.ent.shot_angle += 1.0
       print self.ent.shot_angle
     elif key[ord('w')]:
       if self.ent.shot_angle > 0.5:
-        self.ent.shot_angle -= 0.5
+        self.ent.shot_angle -= 1.0
       print self.ent.shot_angle
 
     if key[ord('a')]:
