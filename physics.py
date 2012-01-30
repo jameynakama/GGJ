@@ -52,7 +52,7 @@ def clod_body(radius, pos, vel, mass):
 	
 	shapeDef = b2CircleDef()
 	shapeDef.radius = radius
-	shapeDef.density = 1
+	shapeDef.density = params.clod.density
 	shapeDef.restitution = 0
 	shapeDef.friction = 1
 
@@ -73,7 +73,7 @@ def snake_body(pos, vel):
 	
 	shapeDef = b2CircleDef()
 	shapeDef.radius = params.snake.radius
-	shapeDef.density = 1
+	shapeDef.density = params.snake.density
 	shapeDef.restitution = 0
 	shapeDef.friction = 1
 

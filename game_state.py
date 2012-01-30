@@ -40,11 +40,13 @@ class PlayState(GameState):
 
   def update(self):
     self.clods.update()
+    self.snakes.update()
     self.dragons.update()
     self.cannon_group.update()
 
   def draw(self, screen):
-    # self.clods.draw(screen)
+    self.clods.draw(screen)
+    self.snakes.draw(screen)
     # self.dragons.draw(screen)
     self.cannon_group.draw(screen)
 

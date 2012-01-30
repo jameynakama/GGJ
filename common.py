@@ -86,8 +86,10 @@ class Media():
 
     self.cannon = [load_img('cannon_back.png'), load_img('cannon.png'), load_img('cannon_front.png')]
     self.vertcannon = load_img('upminicannon.png')
+    self.clod = load_img('clod.png')
     self.home = load_img('home.png')
     self.back = load_img('clouds.png')
+    self.snake = load_img('dragon.png')
 
     self.music_seqs = []
     for i in range(1, 22):

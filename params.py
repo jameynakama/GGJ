@@ -2,21 +2,26 @@
 from common import *
 
 class game:
-  debug_draw = True
+  debug_draw = False
   max_distance = 100
   px_scale = 20
 
 class home:
   initial_mass = 200
   min_mass = 10
-  gravitational_constant = 1.0 # raise it to strengthen gravity
+  gravitational_constant = 13.0 # raise it to strengthen gravity
   collision_category = 0x0001
 
+class ent:
+  firepower = 30.0
+
 class clod:
+  density = 1
   collision_category = 0x0002
 
 class snake:
-  radius = 64
+  radius = 64 / game.px_scale
+  density = 0.1
   
 class dragon:
   length = 2.0

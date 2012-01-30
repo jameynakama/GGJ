@@ -51,6 +51,11 @@ class Home(Unit):
       rad = math.radians(self.home.angle)
       r = self.home.radius + 1.5
       return vec(math.cos(rad)*r, math.sin(rad)*r)
+    @property
+    def fire_pos(self):
+      rad = math.radians(self.shot_angle + self.home.angle) * self.home.angle_mult
+      r = 2.5
+      return vec(math.cos(rad)*r, math.sin(rad)*r)
 
     def update(self):
       self.shot_cool -= 1
@@ -91,7 +96,7 @@ class Home(Unit):
       self.cf.center = self.screen_coords
       screen.blit(self.c_front, self.cf)
 
-      #super(Home.Ent, self).draw(screen)
+      # super(Home.Ent, self).draw(screen)
 
     # def shoot(self, vel):
     #   if(Home.instance.mass > params.home.min_mass):
@@ -100,7 +105,7 @@ class Home(Unit):
     #     print "Home mass too small to shoot!  hah!"
 
     def fire(self, angle):
-      speed = 10.0
+      speed = params.ent.firepower
       vel = vec(math.cos(math.radians(angle)) * speed, math.sin(math.radians(angle)) * speed)
       if(Home.instance.mass > params.home.min_mass):
         Clod(self.pos, vel, 0.5 )
@@ -169,12 +174,12 @@ class Home(Unit):
 
     if key[ord('a')]:
       print 'a event called', self.angle
-      self.angle_mult = -1.0
+      self.angle_mult = -0.75
       self.angle = self.angle - self.angle_delta 
 
     elif key[ord('d')]:
       print 'd event called', self.angle
-      self.angle_mult = 1.0
+      self.angle_mult = 0.75
       self.angle = self.angle + self.angle_delta
 
 class Clod(Unit):
@@ -184,6 +189,8 @@ class Clod(Unit):
     self.radius = Home.mass_to_radius(mass)
     self.body, self.shape = physics.clod_body(self.radius, pos, vel, mass)
     self.shape.SetUserData(self)
+    self.image = Media.media.clod
+    self.rect = self.image.get_rect()
     state().clods.add(self)
     Home.instance.mass -= mass
 
@@ -192,7 +199,8 @@ class Clod(Unit):
     return self.body.GetPosition()
 
   def draw(self):
-    pygame.draw.circle(screen, [255,255,0], self.screen_coords, 4, 0)
+    pass
+    # pygame.draw.circle(screen, [255,255,0], self.screen_coords, 4, 0)
 
   def update(self):
     self.doGravity()
@@ -208,6 +216,8 @@ class Clod(Unit):
       state().clods.remove(self)
       self.shape.ClearUserData()
       del self
+    else:
+      self.rect.center = self.screen_coords
 
 
 class Snake(Unit):
@@ -228,7 +238,8 @@ class Snake(Unit):
     self.body, self.shape = physics.snake_body(pos, vel)
     self.shape.SetUserData(self)
     self.is_hit = False
-
+    self.image = Media.media.snake
+    self.rect = self.image.get_rect()
 
   def take_hit(self):
     self.is_hit = True
@@ -241,6 +252,7 @@ class Snake(Unit):
   def update(self):
     # self.rect.center = self.screen_coords
     self.doGravity()
+    self.rect.center = self.screen_coords
 
   def draw(self, screen):
     pass
